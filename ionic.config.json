@@ -1,0 +1,7 @@
+{
+  "name": "AlertaSeguro",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
