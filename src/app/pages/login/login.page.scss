@@ -1,0 +1,77 @@
+.background {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: url('/assets/fundo-inicial.png') no-repeat center center/cover;
+  z-index: -1;
+}
+
+.content {
+  display: flex;
+  justify-content: center; /* centraliza verticalmente */
+  align-items: center;     /* centraliza horizontalmente */
+  height: 100%;
+  padding: 20px;
+  color: white;
+}
+
+.form-container {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;               /* reduz espaçamento entre campos */
+  text-align: center;
+  padding: 30px 20px;
+  border-radius: 15px;
+  background: rgba(0, 0, 0, 0.55);
+  justify-content: space-between; /* mantém botão no final */
+  height: 400px;           /* altura ajustada */
+}
+
+.back-button {
+  position: absolute;
+  top: 20px;
+  left: 1px;
+  color: #fff;
+  font-size: 1.5rem;
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+p {
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+}
+
+.inputs-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* reduz espaço entre email e senha */
+  flex: 1;   /* ocupa a maior parte da área do formulário */
+}
+
+ion-item {
+  --background: rgba(255, 255, 255, 0.25);
+  --color: #fff;
+  border-radius: 10px;
+  padding: 5px 10px; 
+  height: 50px; /* altura compacta */
+}
+
+ion-input {
+  color: #fff;
+  height: 100%; /* preenche o item */
+  font-size: 0.95rem;
+}
+
+ion-button.login {
+  --background: #2E3B4E; /* azul médio */
+  --color: #FFFFFF;
+  border-radius: 12px;
+  margin-top: 10px;
+  align-self: stretch;
+}

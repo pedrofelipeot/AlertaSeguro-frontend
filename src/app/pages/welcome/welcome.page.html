@@ -1,13 +1,15 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>welcome</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content fullscreen>
+  <div class="background"></div>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">welcome</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <div class="content">
+    <div class="header">
+      <h1>Bem-vindo!</h1>
+      <p>Alertas rápidos para você agir com segurança.</p>
+    </div>
+
+    <div class="buttons">
+      <ion-button routerLink="/login">Login</ion-button>
+      <ion-button routerLink="/register">Cadastro</ion-button>
+    </div>
+  </div>
 </ion-content>

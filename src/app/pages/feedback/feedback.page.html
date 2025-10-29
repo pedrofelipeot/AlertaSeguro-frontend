@@ -1,13 +1,40 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>feedback</ion-title>
+<ion-header>
+  <ion-toolbar style="--background: #0f1520;">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home" color="white"></ion-back-button>
+    </ion-buttons>
+    <ion-title style="color: #ffffff;">Feedback</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">feedback</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="page-content">
+  <ion-card class="section">
+    <ion-card-header>
+      <ion-card-title>Envie seu feedback</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <form (ngSubmit)="submitFeedback()">
+
+        <ion-item>
+          <ion-label position="stacked">Nome</ion-label>
+          <ion-input placeholder="Seu nome" [(ngModel)]="model.name" name="name"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Email</ion-label>
+          <ion-input type="email" placeholder="seu@email.com" [(ngModel)]="model.email" name="email"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Mensagem</ion-label>
+          <ion-textarea placeholder="Escreva seu feedback..." [(ngModel)]="model.message" name="message"></ion-textarea>
+        </ion-item>
+
+        <ion-button expand="block" type="submit" class="save-button" style="--background: #0f1520; --color: #ffffff;">
+          Enviar Feedback
+        </ion-button>
+
+      </form>
+    </ion-card-content>
+  </ion-card>
 </ion-content>

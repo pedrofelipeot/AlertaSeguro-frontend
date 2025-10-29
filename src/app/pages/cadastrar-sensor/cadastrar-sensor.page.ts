@@ -1,20 +1,67 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { RouterModule, Router } from '@angular/router';
+import {
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonButtons,
+  IonBackButton,
+  IonButton,
+  IonInput,
+  IonLabel,
+  IonItem, IonIcon } from '@ionic/angular/standalone';
+import { SensorService } from '../../services/sensor-service';
 
 @Component({
   selector: 'app-cadastrar-sensor',
-  templateUrl: './cadastrar-sensor.page.html',
-  styleUrls: ['./cadastrar-sensor.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
+  imports: [IonIcon, 
+    CommonModule,
+    FormsModule,       // necessário para [(ngModel)]
+    RouterModule,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    IonButtons,
+    IonBackButton,
+    IonButton,
+    IonInput,
+    IonLabel,
+    IonItem
+  ],
+  templateUrl: './cadastrar-sensor.page.html',
+  styleUrls: ['./cadastrar-sensor.page.scss']
 })
-export class CadastrarSensorPage implements OnInit {
+export class CadastrarSensorPage {
+  sensor = {
+    nome: '',
+    localizacao: '',
+    tipo: '',
+    mac: ''
+  };
+  loading = false;
 
-  constructor() { }
+  constructor(private sensorService: SensorService, private router: Router) {}
 
-  ngOnInit() {
+  async cadastrarSensor() {
+    if (!this.sensor.nome || !this.sensor.mac) {
+      alert('Preencha pelo menos Nome e MAC/ID do sensor.');
+      return;
+    }
+
+    this.loading = true;
+    try {
+      await this.sensorService.addSensor(this.sensor);
+      alert('Sensor cadastrado com sucesso!');
+      this.router.navigate(['/home']);
+    } catch (err: any) {
+      alert('Erro ao cadastrar sensor: ' + (err.message || err));
+    } finally {
+      this.loading = false;
+    }
   }
-
 }

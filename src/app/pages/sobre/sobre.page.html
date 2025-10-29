@@ -1,13 +1,36 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>sobre</ion-title>
+<ion-header>
+  <ion-toolbar style="--background: #0f1520;">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home" color="light"></ion-back-button>
+    </ion-buttons>
+    <ion-title style="color: #ffffff;">Sobre</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">sobre</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="page-content">
+  <ion-card class="section">
+    <ion-card-header>
+      <ion-card-title>Sobre este aplicativo</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p>
+        Este aplicativo tem como objetivo fornecer alertas de segurança em tempo real, 
+        permitindo monitoramento de dispositivos de forma simples e eficiente.
+      </p>
+      <p>
+        Desenvolvido por Pedro Felipe, este projeto utiliza Ionic Angular para oferecer 
+        uma interface responsiva e moderna, com foco em experiência do usuário.
+      </p>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card class="section">
+    <ion-card-header>
+      <ion-card-title>Contato</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p>Email: exemplo@email.com</p>
+      <p>GitHub: <a href="https://github.com/pedrofelipeot" target="_blank">github.com/pedrofelipeot</a></p>
+    </ion-card-content>
+  </ion-card>
 </ion-content>

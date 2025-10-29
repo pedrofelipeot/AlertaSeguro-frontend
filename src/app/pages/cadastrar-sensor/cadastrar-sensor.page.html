@@ -1,13 +1,39 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>cadastrar-sensor</ion-title>
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home" text="" icon="arrow-back-outline"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Cadastrar Sensor</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">cadastrar-sensor</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding">
+  <form (ngSubmit)="cadastrarSensor()" #sensorForm="ngForm">
+    
+    <ion-item>
+      <ion-label position="floating">Nome do Sensor</ion-label>
+      <ion-input type="text" [(ngModel)]="sensor.nome" name="nome" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Localização</ion-label>
+      <ion-input type="text" [(ngModel)]="sensor.localizacao" name="localizacao"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Tipo de Sensor</ion-label>
+      <ion-input type="text" [(ngModel)]="sensor.tipo" name="tipo"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">MAC Address / Código do ESP32</ion-label>
+      <ion-input type="text" [(ngModel)]="sensor.mac" name="mac" required></ion-input>
+    </ion-item>
+
+    <ion-button expand="block" type="submit" [disabled]="!sensorForm.form.valid" color="success" class="ion-margin-top">
+      <ion-icon slot="start" name="add-outline"></ion-icon>
+      Cadastrar
+    </ion-button>
+
+  </form>
 </ion-content>

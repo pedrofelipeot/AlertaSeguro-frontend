@@ -1,0 +1,100 @@
+ion-toolbar ion-title {
+  color: #0f1520;
+}
+
+.page-content {
+  padding: 16px;
+  background-color: #f5f5f5;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.section {
+  --ion-background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  padding: 16px;
+}
+
+.row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.date-item {
+  flex: 1;
+  min-width: 120px;
+}
+
+/* Estilo dos ion-item */
+ion-item {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  --border-radius: 8px;
+  margin-bottom: 12px;
+  background-color: #f0f0f0;
+  position: relative; /* necessário para o alinhamento da seta do select */
+}
+
+/* Estilo dos inputs */
+ion-input {
+  --padding-start: 8px;
+  --padding-end: 8px;
+}
+
+/* Botão salvar */
+.save-button {
+  margin-top: 20px;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+/* ---------------------------- */
+/* Remove setas, handles e indicadores em todos os inputs */
+ion-input input,
+input {
+  -webkit-appearance: none;   /* Chrome, Safari, Android WebView */
+  -moz-appearance: textfield; /* Firefox */
+  appearance: none;            /* padrão moderno */
+  margin: 0;
+  padding-right: 0;
+}
+
+/* Remove indicadores do calendar/time picker */
+input::-webkit-calendar-picker-indicator {
+  display: none;
+  -webkit-appearance: none;
+  appearance: none;
+  opacity: 0;
+}
+
+/* Remove setas internas de number/time */
+input::-webkit-inner-spin-button,
+input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Remove outline extra */
+input:focus {
+  outline: none;
+}
+
+/* ---------------------------- */
+/* Ajuste da seta do ion-select para ficar na direita */
+ion-select {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+ion-select::part(icon) {
+  right: 0;           /* coloca a seta no final do campo */
+  position: absolute;
+  pointer-events: none; /* permite clicar no select normalmente */
+}

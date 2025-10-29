@@ -1,13 +1,122 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>programar-alerta</ion-title>
-  </ion-toolbar>
+<ion-header>
+  <ion-toolbar style="--background: #0f1520;">
+  <ion-buttons slot="start">
+    <ion-back-button defaultHref="/home"></ion-back-button>
+  </ion-buttons>
+  <ion-title style="color: #ffffff;">Programar alerta</ion-title>
+</ion-toolbar>
+
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">programar-alerta</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="page-content">
+  <form class="form" (ngSubmit)="scheduleAlert()">
+
+    <!-- Seção: Informações do alerta -->
+    <ion-card class="section">
+      <ion-card-header>
+        <ion-card-title>Informações do alerta</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-label position="stacked">Nome do alerta</ion-label>
+          <ion-input placeholder="Ex: Alerta de teste" [(ngModel)]="model.name" name="name"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Tipo de alerta</ion-label>
+          <ion-select [(ngModel)]="model.type" name="type">
+            <ion-select-option value="movement">Movimento</ion-select-option>
+            <ion-select-option value="test">Teste</ion-select-option>
+            <ion-select-option value="custom">Personalizado</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Seção: Período do alerta -->
+    <ion-card class="section">
+      <ion-card-header>
+        <ion-card-title>Período do alerta</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="row">
+          <ion-item class="date-item">
+            <ion-label position="stacked">Data de início</ion-label>
+            <ion-input
+              type="text"
+              placeholder="DD/MM/YYYY"
+              maxlength="10"
+              [(ngModel)]="model.startDate"
+              name="startDate"
+              (ionInput)="maskDate($event)">
+            </ion-input>
+          </ion-item>
+
+          <ion-item class="date-item">
+            <ion-label position="stacked">Data de fim</ion-label>
+            <ion-input
+              type="text"
+              placeholder="DD/MM/YYYY"
+              maxlength="10"
+              [(ngModel)]="model.endDate"
+              name="endDate"
+              (ionInput)="maskDate($event)">
+            </ion-input>
+          </ion-item>
+        </div>
+
+        <div class="row">
+          <ion-item class="date-item">
+            <ion-label position="stacked">Hora de início</ion-label>
+            <ion-input
+              type="text"
+              placeholder="HH:MM"
+              maxlength="5"
+              [(ngModel)]="model.startTime"
+              name="startTime"
+              (ionInput)="maskTime($event)">
+            </ion-input>
+          </ion-item>
+
+          <ion-item class="date-item">
+            <ion-label position="stacked">Hora de fim</ion-label>
+            <ion-input
+              type="text"
+              placeholder="HH:MM"
+              maxlength="5"
+              [(ngModel)]="model.endTime"
+              name="endTime"
+              (ionInput)="maskTime($event)">
+            </ion-input>
+          </ion-item>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Seção: Dispositivo -->
+    <ion-card class="section">
+      <ion-card-header>
+        <ion-card-title>Dispositivo</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-label position="stacked">Dispositivo</ion-label>
+          <ion-select [(ngModel)]="model.device" name="device">
+            <ion-select-option *ngFor="let d of devices" [value]="d.id">{{d.name}}</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Botão Salvar -->
+    <ion-button 
+      expand="block" 
+      class="save-button" 
+      type="submit" 
+      style="--background: #0f1520; --color: #ffffff;">
+        Salvar alerta
+    </ion-button>
+
+
+  </form>
 </ion-content>
