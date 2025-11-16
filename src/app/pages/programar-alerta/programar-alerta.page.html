@@ -1,122 +1,91 @@
 <ion-header>
-  <ion-toolbar style="--background: #0f1520;">
-  <ion-buttons slot="start">
-    <ion-back-button defaultHref="/home"></ion-back-button>
-  </ion-buttons>
-  <ion-title style="color: #ffffff;">Programar alerta</ion-title>
-</ion-toolbar>
-
+  <ion-toolbar class="header-blur">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/menu"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Programar alerta</ion-title>
+  </ion-toolbar>
 </ion-header>
 
-<ion-content class="page-content">
-  <form class="form" (ngSubmit)="scheduleAlert()">
+<ion-content fullscreen>
 
-    <!-- Seção: Informações do alerta -->
-    <ion-card class="section">
-      <ion-card-header>
-        <ion-card-title>Informações do alerta</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <ion-item>
-          <ion-label position="stacked">Nome do alerta</ion-label>
-          <ion-input placeholder="Ex: Alerta de teste" [(ngModel)]="model.name" name="name"></ion-input>
-        </ion-item>
+  <div class="page-wrapper">
 
-        <ion-item>
-          <ion-label position="stacked">Tipo de alerta</ion-label>
-          <ion-select [(ngModel)]="model.type" name="type">
-            <ion-select-option value="movement">Movimento</ion-select-option>
-            <ion-select-option value="test">Teste</ion-select-option>
-            <ion-select-option value="custom">Personalizado</ion-select-option>
-          </ion-select>
-        </ion-item>
-      </ion-card-content>
-    </ion-card>
+    <form (ngSubmit)="scheduleAlert()">
 
-    <!-- Seção: Período do alerta -->
-    <ion-card class="section">
-      <ion-card-header>
-        <ion-card-title>Período do alerta</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <div class="row">
-          <ion-item class="date-item">
-            <ion-label position="stacked">Data de início</ion-label>
-            <ion-input
-              type="text"
-              placeholder="DD/MM/YYYY"
-              maxlength="10"
-              [(ngModel)]="model.startDate"
-              name="startDate"
-              (ionInput)="maskDate($event)">
-            </ion-input>
-          </ion-item>
+      <!-- Horários -->
+      <ion-card class="section">
+        <ion-card-header>
+          <ion-card-title>Horário</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
 
-          <ion-item class="date-item">
-            <ion-label position="stacked">Data de fim</ion-label>
-            <ion-input
-              type="text"
-              placeholder="DD/MM/YYYY"
-              maxlength="10"
-              [(ngModel)]="model.endDate"
-              name="endDate"
-              (ionInput)="maskDate($event)">
-            </ion-input>
-          </ion-item>
-        </div>
-
-        <div class="row">
-          <ion-item class="date-item">
+          <ion-item class="input-item">
             <ion-label position="stacked">Hora de início</ion-label>
-            <ion-input
-              type="text"
-              placeholder="HH:MM"
-              maxlength="5"
-              [(ngModel)]="model.startTime"
-              name="startTime"
-              (ionInput)="maskTime($event)">
+            <ion-input maxlength="5" name="startTime"
+                       [(ngModel)]="model.startTime"
+                       (ionInput)="maskTime($event)"
+                       placeholder="HH:MM">
             </ion-input>
           </ion-item>
 
-          <ion-item class="date-item">
+          <ion-item class="input-item">
             <ion-label position="stacked">Hora de fim</ion-label>
-            <ion-input
-              type="text"
-              placeholder="HH:MM"
-              maxlength="5"
-              [(ngModel)]="model.endTime"
-              name="endTime"
-              (ionInput)="maskTime($event)">
+            <ion-input maxlength="5" name="endTime"
+                       [(ngModel)]="model.endTime"
+                       (ionInput)="maskTime($event)"
+                       placeholder="HH:MM">
             </ion-input>
           </ion-item>
-        </div>
-      </ion-card-content>
-    </ion-card>
 
-    <!-- Seção: Dispositivo -->
-    <ion-card class="section">
-      <ion-card-header>
-        <ion-card-title>Dispositivo</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <ion-item>
-          <ion-label position="stacked">Dispositivo</ion-label>
-          <ion-select [(ngModel)]="model.device" name="device">
-            <ion-select-option *ngFor="let d of devices" [value]="d.id">{{d.name}}</ion-select-option>
-          </ion-select>
-        </ion-item>
-      </ion-card-content>
-    </ion-card>
+        </ion-card-content>
+      </ion-card>
 
-    <!-- Botão Salvar -->
-    <ion-button 
-      expand="block" 
-      class="save-button" 
-      type="submit" 
-      style="--background: #0f1520; --color: #ffffff;">
+
+      <!-- Dias da semana -->
+      <ion-card class="section">
+        <ion-card-header>
+          <ion-card-title>Dias da semana</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+
+          <ion-item class="input-item">
+            <ion-select [(ngModel)]="model.dias" name="dias" multiple="true">
+              <ion-select-option *ngFor="let d of diasSemana" [value]="d.id">
+                {{ d.nome }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+
+        </ion-card-content>
+      </ion-card>
+
+
+      <!-- Dispositivo -->
+      <ion-card class="section">
+        <ion-card-header>
+          <ion-card-title>Dispositivo</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+
+          <ion-item class="input-item">
+            <ion-select [(ngModel)]="model.device" name="device">
+              <ion-select-option *ngFor="let d of devices" [value]="d.mac">
+                {{ d.nome }} ({{ d.mac }})
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Botão -->
+      <ion-button class="save-button" expand="block" type="submit" [disabled]="!isFormValid()">
         Salvar alerta
-    </ion-button>
+      </ion-button>
 
+    </form>
 
-  </form>
+  </div>
+
 </ion-content>

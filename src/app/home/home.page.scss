@@ -1,39 +1,66 @@
-.content {
-  padding: 20px;
+/* ======== FUNDO ======== */
+ion-content {
+  --background: linear-gradient(160deg, #0f1520 0%, #1b2535 100%);
+}
+
+/* ======== HEADER COM BLUR ======== */
+.header-blur {
+  --background: rgba(15,21,32,0.75);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.35);
+}
+
+.menu-icon {
   color: #fff;
-  background: #1c1c1c; /* fundo escuro */
-  height: 100%;
+  font-size: 1.6rem;
 }
 
-.title {
-  font-size: 2rem;
-  margin-bottom: 20px;
-  font-weight: bold;
+
+/* ======== WRAPPER ======== */
+.home-wrapper {
+  padding: 16px;
+  max-width: 520px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  color: #fff;
 }
 
-.card {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 15px;
-  margin-bottom: 20px;
+
+/* ======== MINI CARDS (versão reduzida do card-dark) ======== */
+.mini-card {
+  background: #1e2633;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(255,255,255,0.05);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 12px;
+
+  opacity: 0;
+  transform: translateY(12px);
+  animation: fadeUp 0.55s ease forwards;
 }
 
-.alert-card {
-  gap: 10px;
+.inline-card {
+  justify-content: space-between;
 }
 
+
+/* ======== ALERTA ======== */
 .alert-card h2 {
-  font-size: 1.2rem;
   margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
 }
 
 .alert-card p {
-  font-size: 0.9rem;
-  color: #bbb;
   margin: 0;
+  font-size: 0.85rem;
+  color: #b8c3d1;
 }
 
 .alert-icon {
@@ -41,40 +68,24 @@
   color: #ffcc00;
 }
 
-.toggle-card span {
-  font-size: 1rem;
-}
 
-.status {
-  margin-bottom: 20px;
-}
-
+/* ======== STATUS ======== */
 .status h2 {
-  font-size: 1.2rem;
-  margin-bottom: 5px;
+  font-size: 1.1rem;
+  margin-bottom: 4px;
 }
 
 .status .online {
-  color: #4caf50;
+  color: #4cc9f0;
   font-weight: bold;
-  font-size: 1rem;
 }
 
-.status .ssid {
-  font-size: 0.9rem;
-  color: #bbb;
-}
 
-.test-button {
-  --background: #2E3B4E; /* azul médio */
-  --color: #fff;
-  border-radius: 12px;
-  margin-bottom: 20px;
-}
-
+/* ======== HISTÓRICO ======== */
 .history h2 {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   margin-bottom: 10px;
+  font-weight: 700;
 }
 
 .table-header,
@@ -82,15 +93,30 @@
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   padding: 8px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
 .table-header {
+  font-size: 0.9rem;
+  color: #cfd8e3;
   font-weight: bold;
 }
 
 .table-row span {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
 
 
+/* ======== ANIMAÇÃO ======== */
+.fade {
+  opacity: 0;
+  transform: translateY(12px);
+  animation: fadeUp 0.55s ease forwards;
+}
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

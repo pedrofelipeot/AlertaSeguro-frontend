@@ -1,36 +1,53 @@
 <ion-header>
-  <ion-toolbar style="--background: #0f1520;">
+  <ion-toolbar class="header-blur">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/home" color="light"></ion-back-button>
+      <ion-back-button defaultHref="/menu" color="light"></ion-back-button>
     </ion-buttons>
-    <ion-title style="color: #ffffff;">Sobre</ion-title>
+    <ion-title>Sobre</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="page-content">
-  <ion-card class="section">
-    <ion-card-header>
-      <ion-card-title>Sobre este aplicativo</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <p>
-        Este aplicativo tem como objetivo fornecer alertas de segurança em tempo real, 
-        permitindo monitoramento de dispositivos de forma simples e eficiente.
-      </p>
-      <p>
-        Desenvolvido por Pedro Felipe, este projeto utiliza Ionic Angular para oferecer 
-        uma interface responsiva e moderna, com foco em experiência do usuário.
-      </p>
-    </ion-card-content>
-  </ion-card>
+<ion-content fullscreen class="page-content">
+  <div class="center-wrapper">
+    <!-- Card: Sobre o App -->
+    <ion-card class="section">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="information-circle-outline" class="icon-title"></ion-icon>
+          Sobre este aplicativo
+        </ion-card-title>
+      </ion-card-header>
 
-  <ion-card class="section">
-    <ion-card-header>
-      <ion-card-title>Contato</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <p>Email: exemplo@email.com</p>
-      <p>GitHub: <a href="https://github.com/pedrofelipeot" target="_blank">github.com/pedrofelipeot</a></p>
-    </ion-card-content>
-  </ion-card>
+      <ion-card-content>
+        <p>
+          Este aplicativo foi desenvolvido para fornecer alertas de segurança em tempo real,
+          permitindo monitoramento rápido, simples e eficiente de dispositivos.
+        </p>
+        <p>
+          Construído em Ionic Angular, o projeto aposta em uma interface moderna, responsiva
+          e intuitiva — focada em oferecer uma excelente experiência ao usuário.
+        </p>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Card: Contato -->
+    <ion-card class="section">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="chatbubble-ellipses-outline" class="icon-title"></ion-icon>
+          Contato
+        </ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <p>Email: <strong>pedrofelipeot@gmail.com</strong></p>
+        <p>
+          GitHub:
+          <a href="https://github.com/pedrofelipeot" target="_blank">
+            github.com/pedrofelipeot
+          </a>
+        </p>
+      </ion-card-content>
+    </ion-card>
+  </div>
 </ion-content>

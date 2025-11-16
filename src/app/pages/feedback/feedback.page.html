@@ -1,40 +1,50 @@
 <ion-header>
-  <ion-toolbar style="--background: #0f1520;">
+  <ion-toolbar class="header-blur">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/home" color="white"></ion-back-button>
+      <ion-back-button defaultHref="/menu" color="light"></ion-back-button>
     </ion-buttons>
-    <ion-title style="color: #ffffff;">Feedback</ion-title>
+    <ion-title>Feedback</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="page-content">
-  <ion-card class="section">
-    <ion-card-header>
-      <ion-card-title>Envie seu feedback</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <form (ngSubmit)="submitFeedback()">
+<ion-content fullscreen>
 
-        <ion-item>
-          <ion-label position="stacked">Nome</ion-label>
-          <ion-input placeholder="Seu nome" [(ngModel)]="model.name" name="name"></ion-input>
-        </ion-item>
+  <div class="center-wrapper">
+    <ion-card class="section">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="chatbubble-outline" class="icon-title"></ion-icon>
+          Envie seu feedback
+        </ion-card-title>
+      </ion-card-header>
 
-        <ion-item>
-          <ion-label position="stacked">Email</ion-label>
-          <ion-input type="email" placeholder="seu@email.com" [(ngModel)]="model.email" name="email"></ion-input>
-        </ion-item>
+      <ion-card-content>
+        <form (ngSubmit)="submitFeedback()">
 
-        <ion-item>
-          <ion-label position="stacked">Mensagem</ion-label>
-          <ion-textarea placeholder="Escreva seu feedback..." [(ngModel)]="model.message" name="message"></ion-textarea>
-        </ion-item>
+          <ion-item class="input-item">
+            <ion-label position="stacked">Nome</ion-label>
+            <ion-input placeholder="Seu nome" [(ngModel)]="model.name" name="name"></ion-input>
+          </ion-item>
 
-        <ion-button expand="block" type="submit" class="save-button" style="--background: #0f1520; --color: #ffffff;">
-          Enviar Feedback
-        </ion-button>
+          <ion-item class="input-item">
+            <ion-label position="stacked">Email</ion-label>
+            <ion-input type="email" placeholder="seu@email.com"
+              [(ngModel)]="model.email" name="email"></ion-input>
+          </ion-item>
 
-      </form>
-    </ion-card-content>
-  </ion-card>
+          <ion-item class="input-item">
+            <ion-label position="stacked">Mensagem</ion-label>
+            <ion-textarea placeholder="Escreva seu feedback..."
+              [(ngModel)]="model.message" name="message"></ion-textarea>
+          </ion-item>
+
+          <ion-button expand="block" type="submit" class="save-button">
+            Enviar Feedback
+          </ion-button>
+
+        </form>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
 </ion-content>

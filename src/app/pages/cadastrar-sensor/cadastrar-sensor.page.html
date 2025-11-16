@@ -1,39 +1,61 @@
 <ion-header>
-  <ion-toolbar color="primary">
+  <ion-toolbar class="header-blur">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/home" text="" icon="arrow-back-outline"></ion-back-button>
+      <ion-back-button defaultHref="/menu" color="light"></ion-back-button>
     </ion-buttons>
     <ion-title>Cadastrar Sensor</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <form (ngSubmit)="cadastrarSensor()" #sensorForm="ngForm">
-    
-    <ion-item>
-      <ion-label position="floating">Nome do Sensor</ion-label>
-      <ion-input type="text" [(ngModel)]="sensor.nome" name="nome" required></ion-input>
-    </ion-item>
+<ion-content fullscreen>
 
-    <ion-item>
-      <ion-label position="floating">Localização</ion-label>
-      <ion-input type="text" [(ngModel)]="sensor.localizacao" name="localizacao"></ion-input>
-    </ion-item>
+  <div class="center-wrapper">
+    <ion-card class="section">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="hardware-chip-outline" class="icon-title"></ion-icon>
+          Novo Sensor
+        </ion-card-title>
+      </ion-card-header>
 
-    <ion-item>
-      <ion-label position="floating">Tipo de Sensor</ion-label>
-      <ion-input type="text" [(ngModel)]="sensor.tipo" name="tipo"></ion-input>
-    </ion-item>
+      <ion-card-content>
 
-    <ion-item>
-      <ion-label position="floating">MAC Address / Código do ESP32</ion-label>
-      <ion-input type="text" [(ngModel)]="sensor.mac" name="mac" required></ion-input>
-    </ion-item>
+        <form (ngSubmit)="cadastrarSensor()" #sensorForm="ngForm">
 
-    <ion-button expand="block" type="submit" [disabled]="!sensorForm.form.valid" color="success" class="ion-margin-top">
-      <ion-icon slot="start" name="add-outline"></ion-icon>
-      Cadastrar
-    </ion-button>
+          <ion-item class="input-item">
+            <ion-label position="stacked">Nome do Sensor</ion-label>
+            <ion-input type="text" [(ngModel)]="sensor.nome" name="nome" required></ion-input>
+          </ion-item>
 
-  </form>
+          <ion-item class="input-item">
+            <ion-label position="stacked">Localização</ion-label>
+            <ion-input type="text" [(ngModel)]="sensor.localizacao" name="localizacao"></ion-input>
+          </ion-item>
+
+          <ion-item class="input-item">
+            <ion-label position="stacked">Tipo de Sensor</ion-label>
+            <ion-input type="text" [(ngModel)]="sensor.tipo" name="tipo"></ion-input>
+          </ion-item>
+
+          <ion-item class="input-item">
+            <ion-label position="stacked">MAC Address / Código do ESP32</ion-label>
+            <ion-input type="text" [(ngModel)]="sensor.mac" name="mac" required></ion-input>
+          </ion-item>
+
+          <ion-button 
+            expand="block" 
+            type="submit" 
+            class="save-button"
+            [disabled]="!sensorForm.form.valid"
+          >
+            <ion-icon slot="start" name="add-outline"></ion-icon>
+            Cadastrar Sensor
+          </ion-button>
+
+        </form>
+        
+      </ion-card-content>
+    </ion-card>
+  </div>
+
 </ion-content>

@@ -1,100 +1,119 @@
-ion-toolbar ion-title {
-  color: #0f1520;
+/* ======== FUNDO ======== */
+ion-content {
+  --background: linear-gradient(160deg, #0f1520 0%, #1b2535 100%);
 }
 
-.page-content {
+/* Wrapper para evitar bugs do scroll */
+.page-wrapper {
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
   padding: 16px;
-  background-color: #f5f5f5;
+  box-sizing: border-box;
 }
 
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+
+/* ======== HEADER COM BLUR ======== */
+.header-blur {
+  --background: rgba(15,21,32,0.75);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 1px 8px rgba(0,0,0,0.35);
+  color: #fff;
 }
 
+ion-back-button::part(icon) {
+  color: #ffffff !important;
+}
+
+
+/* ======== CARD ======== */
 .section {
-  --ion-background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  padding: 16px;
-}
+  --ion-background-color: #1e2633;
+  border-radius: 18px;
+  padding: 20px;
+  margin-bottom: 16px;
 
-.row {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
+  border: 1px solid rgba(255,255,255,0.05);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.35);
 
-.date-item {
-  flex: 1;
-  min-width: 120px;
-}
-
-/* Estilo dos ion-item */
-ion-item {
-  --padding-start: 0;
-  --inner-padding-end: 0;
-  --border-radius: 8px;
-  margin-bottom: 12px;
-  background-color: #f0f0f0;
-  position: relative; /* necessário para o alinhamento da seta do select */
-}
-
-/* Estilo dos inputs */
-ion-input {
-  --padding-start: 8px;
-  --padding-end: 8px;
-}
-
-/* Botão salvar */
-.save-button {
-  margin-top: 20px;
-  border-radius: 10px;
-  font-weight: bold;
-}
-
-/* ---------------------------- */
-/* Remove setas, handles e indicadores em todos os inputs */
-ion-input input,
-input {
-  -webkit-appearance: none;   /* Chrome, Safari, Android WebView */
-  -moz-appearance: textfield; /* Firefox */
-  appearance: none;            /* padrão moderno */
-  margin: 0;
-  padding-right: 0;
-}
-
-/* Remove indicadores do calendar/time picker */
-input::-webkit-calendar-picker-indicator {
-  display: none;
-  -webkit-appearance: none;
-  appearance: none;
   opacity: 0;
+  transform: translateY(12px);
+  animation: fadeUp 0.55s ease forwards;
 }
 
-/* Remove setas internas de number/time */
-input::-webkit-inner-spin-button,
-input::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
 
-/* Remove outline extra */
-input:focus {
-  outline: none;
-}
-
-/* ---------------------------- */
-/* Ajuste da seta do ion-select para ficar na direita */
-ion-select {
-  position: relative;
+/* ======== TÍTULO ======== */
+ion-card-title {
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
   display: flex;
+  gap: 8px;
   align-items: center;
 }
 
-ion-select::part(icon) {
-  right: 0;           /* coloca a seta no final do campo */
+
+/* ======== FAIXA LATERAL ======== */
+ion-card-header {
+  padding-left: 14px;
+  position: relative;
+}
+
+ion-card-header::before {
+  content: "";
   position: absolute;
-  pointer-events: none; /* permite clicar no select normalmente */
+  left: 0;
+  top: 12px;
+  bottom: 12px;
+  width: 4px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #4cc9f0, #4361ee);
+}
+
+
+/* ======== INPUTS ======== */
+.input-item {
+  --background: #262f3f;
+  --border-radius: 12px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  --padding-start: 12px;
+  --inner-padding-end: 12px;
+}
+
+ion-label {
+  color: #cfd8e3;
+}
+
+ion-input,
+ion-select {
+  --color: #fff;
+}
+
+
+/* ======== BOTÃO ======== */
+.save-button {
+  border-radius: 12px;
+  font-weight: bold;
+  --background: linear-gradient(160deg, #1b2535, #0f1520);
+  --color: #fff;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+  margin-top: 8px;
+}
+
+ion-button.save-button[disabled] {
+  opacity: 0.7 !important;
+  filter: grayscale(0.4) brightness(0.8);
+  --background: linear-gradient(160deg, #2a3547, #1a2230) !important;
+  --color: #b8c3d1 !important;
+}
+
+
+/* ======== ANIMAÇÃO ======== */
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

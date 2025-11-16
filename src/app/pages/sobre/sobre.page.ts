@@ -11,7 +11,8 @@ import {
   IonCard,
   IonCardHeader,
   IonCardTitle,
-  IonCardContent
+  IonCardContent,
+  IonIcon
 } from '@ionic/angular/standalone';
 
 @Component({
@@ -31,13 +32,11 @@ import {
     IonCard,
     IonCardHeader,
     IonCardTitle,
-    IonCardContent
+    IonCardContent,
+    IonIcon    // <-- obrigatório para <ion-icon> funcionar como componente standalone
   ]
 })
 export class SobrePage implements OnInit {
-
-  constructor() { }
-
-  ngOnInit() { }
-
+  constructor() {}
+  ngOnInit() {}
 }

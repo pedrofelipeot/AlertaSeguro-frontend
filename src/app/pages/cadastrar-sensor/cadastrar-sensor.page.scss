@@ -1,23 +1,140 @@
+/* Fundo igual ao Sobre/Feedback */
 ion-content {
-  --background: #1c1c1c;
+  --background: linear-gradient(160deg, #0f1520 0%, #1b2535 100%);
+}
+
+ion-content::part(scroll) {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100%;
+  padding: 0;
+}
+
+/* Header com blur */
+.header-blur {
+  --background: rgba(15, 21, 32, 0.75);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #fff;
+  box-shadow: 0 1px 8px rgba(0,0,0,0.35);
+}
+
+/* Wrapper centralizado */
+.center-wrapper {
+  width: 100%;
+  max-width: 520px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-sizing: border-box;
+}
+
+/* Card principal */
+.section {
+  width: 100%;
+  box-sizing: border-box;
+  --ion-background-color: #1e2633;
+  border-radius: 18px;
+  padding: 20px;
+
+  box-shadow: 0 12px 28px rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.05);
+
+  opacity: 0;
+  transform: translateY(12px);
+  animation: fadeUp 0.55s ease forwards;
+}
+
+/* Título */
+ion-card-title {
+  font-weight: 700;
+  font-size: 20px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon-title {
+  font-size: 22px;
   color: #fff;
 }
 
-ion-item {
-  --background: #111;
-  --color: #fff;
-  margin-bottom: 10px;
-  border-radius: 8px;
+/* Faixa colorida */
+ion-card-header {
+  position: relative;
+  padding-left: 14px;
+}
+
+ion-card-header::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 12px;
+  bottom: 12px;
+  width: 4px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #4cc9f0, #4361ee);
+}
+
+/* Inputs */
+.input-item {
+  --background: #262f3f;
+  --border-radius: 10px;
+  border-radius: 12px;
+  margin-bottom: 14px;
+  --padding-start: 12px;
+  --inner-padding-end: 12px;
+  color: #fff;
 }
 
 ion-label {
-  color: #ccc !important;
+  color: #cfd8e3;
 }
 
-ion-input {
-  color: #fff !important;
+ion-input, ion-textarea {
+  --color: #ffffff;
 }
 
-ion-button {
+/* Botão */
+.save-button {
+  margin-top: 12px;
+  border-radius: 12px;
   font-weight: bold;
+  --background: linear-gradient(160deg, #1b2535, #0f1520);
+  --color: #ffffff;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+}
+
+.center-wrapper {
+  width: 100%;
+  max-width: 520px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-sizing: border-box;
+  margin: 0 auto; /* GARANTE CENTRALIZAÇÃO */
+}
+
+.section {
+  width: 100%;
+  margin: 0 auto; /* AJUDA A CENTRALIZAR O CARD */
+}
+
+
+/* Back Button */
+ion-back-button::part(icon) {
+  color: #ffffff !important;
+}
+
+/* Animação */
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

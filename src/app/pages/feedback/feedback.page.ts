@@ -10,12 +10,12 @@ import {
   IonLabel,
   IonInput,
   IonTextarea,
-  IonButton, IonBackButton, IonButtons, IonCard, IonCardHeader, IonCardTitle, IonCardContent } from '@ionic/angular/standalone';
+  IonButton, IonBackButton, IonButtons, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonIcon } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-feedback',
   standalone: true,
-  imports: [IonCardContent, IonCardTitle, IonCardHeader, IonCard, IonButtons, IonBackButton, 
+  imports: [IonIcon, IonCardContent, IonCardTitle, IonCardHeader, IonCard, IonButtons, IonBackButton, 
     CommonModule,
     FormsModule,
     IonHeader,

@@ -1,0 +1,144 @@
+/* ======== FUNDO ======== */
+ion-content {
+  --background: linear-gradient(160deg, #0f1520 0%, #1b2535 100%);
+  color: #fff;
+}
+
+ion-content::part(scroll) {
+  padding-top: 24px;
+}
+
+/* ======== HEADER DARK / BLUR ======== */
+.header-blur {
+  --background: rgba(15,21,32,0.80);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 18px rgba(0,0,0,0.45);
+  color: #ffffff;
+}
+
+.header-blur ion-title {
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.header-blur ion-button ion-icon,
+.header-blur ion-back-button::part(icon) {
+  color: #ffffff !important;
+}
+
+/* ======== PERFIL ======== */
+.profile-box {
+  padding: 36px 20px 26px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  animation: fadeUp 0.5s ease forwards;
+  opacity: 0;
+}
+
+.profile-box ion-avatar {
+  width: 100px;
+  height: 100px;
+  display: block;
+  margin-top: 20px;
+  border-radius: 50%;
+  overflow: hidden;
+
+  border: 3px solid rgba(255,255,255,0.16);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.45);
+
+  margin-bottom: 12px;
+}
+
+.profile-name {
+  margin-top: 4px;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.profile-email {
+  font-size: 0.88rem;
+  color: #c7c7c7;
+  margin-bottom: 18px;
+}
+
+/* Botão Sair */
+.profile-box ion-button {
+  --border-color: rgba(255,80,80,0.6);
+  --color: #ff8080;
+  --border-width: 1px;
+  border-radius: 12px;
+  backdrop-filter: blur(4px);
+}
+
+/* ======== LISTA ======== */
+.menu-list {
+  background: transparent !important;
+  padding: 22px 18px;
+}
+
+/* Card dos itens */
+.menu-list ion-item {
+  --background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(8px);
+
+  border-radius: 18px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+
+  box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+  color: #ffffff;
+  transition: all 0.22s ease;
+
+  animation: fadeUp 0.6s ease forwards;
+  opacity: 0;
+}
+
+/* Ícones */
+.menu-list ion-item ion-icon {
+  color: #9faac0;
+  font-size: 22px;
+  margin-right: 12px;
+}
+
+/* Hover / Active */
+.menu-list ion-item:hover,
+.menu-list ion-item:active {
+  transform: translateY(-3px) scale(1.02);
+  --background: rgba(255,255,255,0.14);
+  box-shadow: 0 12px 26px rgba(0,0,0,0.6);
+}
+
+.menu-list ion-item:hover ion-icon {
+  color: #fff;
+}
+
+/* ======== DIVISOR ======== */
+.menu-divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255,255,255,0.16),
+    transparent
+  );
+  backdrop-filter: blur(4px);
+}
+
+/* ======== ANIMAÇÃO ======== */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

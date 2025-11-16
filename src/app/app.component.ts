@@ -1,78 +1,56 @@
-import { Component, OnInit } from '@angular/core';
-import { PushNotifications } from '@capacitor/push-notifications';
-import { AuthService } from '../app/services/auth-service';
-import { HttpClient } from '@angular/common/http';
-import { IonicModule } from '@ionic/angular';
-import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { IonicModule, MenuController, Platform } from '@ionic/angular';
+import { RouterModule } from '@angular/router';
+import { AuthService } from './services/auth-service';
+import { NotificationService } from './services/notification-service';
+import { StatusBar, Style } from '@capacitor/status-bar';
 
 @Component({
   selector: 'app-root',
-  templateUrl: 'app.component.html',
+  templateUrl: './app.component.html',
   standalone: true,
-  imports: [
-    IonicModule,
-    CommonModule
-  ]
+  imports: [IonicModule, RouterModule],
 })
-export class AppComponent implements OnInit {
-
-  backendUrl = 'https://alertaseguro-backend.onrender.com';
-  sensorId = '004b122e188c'; // Seu sensor fixo
+export class AppComponent {
 
   constructor(
+    private platform: Platform,
+    private menuCtrl: MenuController,
     private authService: AuthService,
-    private http: HttpClient
-  ) {}
+    private notificationService: NotificationService
+  ) {
 
-  async ngOnInit() {
-    console.log('Iniciando app...');
+    // Inicializa status bar e empurra conteúdo para baixo
+    this.initializeApp();
 
-    const permResult = await PushNotifications.requestPermissions();
-    console.log('Permissão push:', permResult);
-
-    if (permResult.receive !== 'granted') {
-      console.warn('Permissão de push não concedida');
-      return;
-    }
-
-    await PushNotifications.register();
-
-    PushNotifications.addListener('registration', async (token) => {
-      console.log('Token FCM:', token.value);
-
-      let userId = this.authService.getCurrentUserId();
-      console.log('UserID retornado pelo AuthService:', userId);
-
-      if (!userId) {
-        console.warn('Nenhum userId encontrado, usando fallback de teste');
-        userId = 'fwNnZSbMJ2g2XokMimLaIJ0JQBA3';
-      }
-
-      try {
-        console.log('Enviando token para backend:', {
-          userId,
-          sensorId: this.sensorId,
-          token: token.value
-        });
-
-        await this.http.post(`${this.backendUrl}/register-token`, {
-          userId,
-          sensorId: this.sensorId,
-          token: token.value
-        }).toPromise();
-
-        console.log('Token enviado com sucesso!');
-      } catch (err) {
-        console.error('Erro ao registrar token no backend:', err);
-      }
-    });
-
-    PushNotifications.addListener('registrationError', (error) => {
-      console.error('Erro ao registrar push:', error);
-    });
+    // Suas notificações continuam funcionando
+    this.notificationService.initNotifications();
   }
 
-  logout() {
-    console.log("Logout acionado");
+  /** Ajuste da Status Bar para evitar que o HEADER/FOOTER fiquem por baixo do sistema */
+  private async initializeApp() {
+    await this.platform.ready();
+
+    try {
+      // Impede overlay da status bar
+      await StatusBar.setOverlaysWebView({ overlay: false });
+
+      // Ajusta cor da status bar — dark combina com header escuro
+      await StatusBar.setStyle({ style: Style.Dark });
+
+      console.log('📱 StatusBar ajustada com sucesso!');
+    } catch (error) {
+      console.warn('⚠️ Erro ao ajustar StatusBar', error);
+    }
+  }
+
+  async logout() {
+    try {
+      await this.authService.signOut();
+      console.log('🚪 Logout realizado com sucesso!');
+      await this.menuCtrl.close('main-menu');
+    } catch (err) {
+      console.error('❌ Erro ao fazer logout:', err);
+    }
   }
 }

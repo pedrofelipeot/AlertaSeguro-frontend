@@ -1,65 +1,57 @@
 <ion-header>
-  <ion-toolbar style="--background: #1c1c1c; box-shadow: none;">
-    <!-- Botão para abrir/recolher menu -->
+  <ion-toolbar class="header-blur">
     <ion-buttons slot="start">
-      <ion-menu-button autoHide="false" style="color: #fff;"></ion-menu-button>
+      <ion-button (click)="goToMenu()">
+        <ion-icon name="menu-outline" class="menu-icon"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content fullscreen>
-  <div class="content">
 
-    <!-- Mensagem de Alerta -->
-    <div class="card alert-card">
+  <div class="home-wrapper">
+
+    <!-- 🔥 ÚLTIMO ALERTA REAL -->
+    <div class="mini-card alert-card fade" *ngIf="lastEvent">
       <ion-icon name="alert-circle-outline" class="alert-icon"></ion-icon>
       <div>
-        <h2>Mensagem de Alerta</h2>
-        <p>Último alerta - 10:30 AM</p>
+        <h2>{{ lastEvent.mensagem }}</h2>
+        <p>Último alerta - {{ lastEvent.hora }}</p>
       </div>
     </div>
 
     <!-- Toggle monitoramento -->
-    <div class="card toggle-card">
+    <div class="mini-card inline-card fade">
       <span>Monitoramento</span>
       <ion-toggle></ion-toggle>
     </div>
 
-    <!-- Status do dispositivo -->
-    <div class="status">
+    <!-- Status -->
+    <div class="status fade">
       <h2>Status do Dispositivo</h2>
       <p class="online">Online</p>
     </div>
 
-    <!-- Histórico de notificações -->
-    <div class="history">
+    <!-- Histórico -->
+    <div class="history fade">
       <h2>Histórico de Notificações</h2>
+
       <div class="table-header">
         <span>Data/Hora</span>
         <span>Tipo</span>
         <span>Dispositivo</span>
       </div>
-      <div class="table-row">
-        <span>10:30 AM</span>
-        <span>Movimento</span>
-        <span>Device 1</span>
+
+      <!-- 🔥 EVENTOS REAIS -->
+      <div class="table-row" *ngFor="let e of events">
+        <span>{{ e.data }} - {{ e.hora }}</span>
+        <span>{{ e.mensagem }}</span>
+        <span>{{ mac }}</span>
       </div>
-      <div class="table-row">
-        <span>10:30 AM</span>
-        <span>Teste</span>
-        <span>Device 2</span>
-      </div>
-      <div class="table-row">
-        <span>9:45 AM</span>
-        <span>Movimento</span>
-        <span>Device 2</span>
-      </div>
-      <div class="table-row">
-        <span>9:45 AM</span>
-        <span>Teste</span>
-        <span>Device 2</span>
-      </div>
+
     </div>
 
   </div>
+
 </ion-content>

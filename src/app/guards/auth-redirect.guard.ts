@@ -3,18 +3,17 @@ import { inject } from '@angular/core';
 import { AuthService } from '../services/auth-service';
 import { Router } from '@angular/router';
 
-export const AuthGuard: CanActivateFn = () => {
+export const AuthRedirectGuard: CanActivateFn = () => {
   const auth = inject(AuthService);
   const router = inject(Router);
 
   const uid = auth.getUid();
 
   if (uid) {
-    console.log('[AuthGuard] acesso permitido');
-    return true;
+    console.log('[AuthRedirectGuard] já logado → indo para home');
+    router.navigate(['/home'], { replaceUrl: true });
+    return false;
   }
 
-  console.log('[AuthGuard] bloqueado → redirecionando para login');
-  router.navigate(['/login'], { replaceUrl: true });
-  return false;
+  return true;
 };

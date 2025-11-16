@@ -12,15 +12,17 @@ import {
   IonButton,
   IonInput,
   IonLabel,
-  IonItem, IonIcon } from '@ionic/angular/standalone';
+  IonItem, 
+  IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardContent } from '@ionic/angular/standalone';
 import { SensorService } from '../../services/sensor-service';
 
 @Component({
   selector: 'app-cadastrar-sensor',
   standalone: true,
-  imports: [IonIcon, 
+  imports: [IonCardContent, IonCardTitle, IonCardHeader, IonCard, 
+    IonIcon,
     CommonModule,
-    FormsModule,       // necessário para [(ngModel)]
+    FormsModule,       
     RouterModule,
     IonHeader,
     IonToolbar,
@@ -55,7 +57,7 @@ export class CadastrarSensorPage {
 
     this.loading = true;
     try {
-      await this.sensorService.addSensor(this.sensor);
+      await this.sensorService.addSensor(this.sensor); // salva na subcoleção do usuário
       alert('Sensor cadastrado com sucesso!');
       this.router.navigate(['/home']);
     } catch (err: any) {

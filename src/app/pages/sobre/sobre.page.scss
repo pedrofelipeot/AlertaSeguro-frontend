@@ -1,33 +1,149 @@
-.page-content {
-  padding: 16px;
-  background-color: #f5f5f5;
+/* ===================================== */
+/*               FUNDO                   */
+/* ===================================== */
+ion-content {
+  --background: linear-gradient(160deg, #0f1520 0%, #1b2535 100%);
 }
 
-.section {
-  --ion-background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+ion-content::part(scroll) {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;   /* CENTRALIZA VERTICAL */
+  align-items: center;       /* CENTRALIZA HORIZONTAL */
   padding: 16px;
-  margin-bottom: 16px;
+  min-height: 100%;          /* Necessário para centralização real */
+}
+
+/* ===================================== */
+/*         HEADER PADRÃO DO APP          */
+/* ===================================== */
+.header-blur {
+  --background: rgba(15,21,32,0.80);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  box-shadow: 0 4px 18px rgba(0,0,0,0.45);
+  color: #ffffff;
+}
+
+.header-blur ion-title {
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.header-blur ion-button ion-icon,
+.header-blur ion-back-button::part(icon) {
+  color: #ffffff !important;
+}
+
+/* ===================================== */
+/*            CARD - SEÇÃO               */
+/* ===================================== */
+.section {
+  box-sizing: border-box;
+  --ion-background-color: #1e2633;
+  border-radius: 18px;
+  margin: 0;
+
+  box-shadow: 0 12px 28px rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.05);
+
+  opacity: 0;
+  transform: translateY(12px);
+  animation: fadeUp 0.55s ease forwards;
+}
+
+/* Conteúdo centralizado e limitado */
+.center-wrapper {
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ===================================== */
+/*      FAIXA LATERAL DO CARD            */
+/* ===================================== */
+ion-card-header {
+  position: relative;
+  padding-left: 14px;
+}
+
+ion-card-header::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 12px;
+  bottom: 12px;
+  width: 4px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #4cc9f0, #4361ee);
+}
+
+/* Ícone e título */
+.icon-title {
+  font-size: 22px;
+  color: #fff !important;
 }
 
 ion-card-title {
-  font-weight: bold;
-  color: #ffffff;
+  font-weight: 700;
+  font-size: 20px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
+/* ===================================== */
+/*               TIPOGRAFIA              */
+/* ===================================== */
 p {
-  font-size: 16px;
-  color: #ffffff; /* texto escuro consistente com o tema */
-  line-height: 1.6;
+  font-size: 15.5px;
+  color: #d9d9d9;
+  line-height: 1.55;
+  margin: 0 0 12px 0;
 }
-
 
 a {
-  color: #ffffff;
+  color: #4cc9f0;
   text-decoration: none;
+  font-weight: 600;
 }
 
 a:hover {
   text-decoration: underline;
+}
+
+/* ===================================== */
+/*      BOTÃO VOLTAR - redundância       */
+/* (já herdado do header-blur, mas fica) */
+/* ===================================== */
+ion-back-button {
+  --color: #ffffff !important;
+}
+
+ion-back-button::part(icon) {
+  color: #ffffff !important;
+}
+
+/* ===================================== */
+/*              ANIMAÇÃO                 */
+/* ===================================== */
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===================================== */
+/*          AJUSTE TELAS ALTAS           */
+/* ===================================== */
+@media (min-height: 800px) {
+  .center-wrapper {
+    gap: 20px;
+  }
 }

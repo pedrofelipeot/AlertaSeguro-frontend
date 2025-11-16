@@ -1,86 +1,105 @@
-// src/app/services/auth.service.ts
 import { Injectable } from '@angular/core';
-import {
-  Auth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  User,
-  EmailAuthProvider,
-  reauthenticateWithCredential
-} from '@angular/fire/auth';
-import {
-  Firestore,
-  doc,
-  setDoc,
-  deleteDoc,
-  serverTimestamp
-} from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
-import { authState } from '@angular/fire/auth';
+import { CapacitorHttp } from '@capacitor/core';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  // ✅ Sempre usar HTTPS e evitar redirecionamentos
+  private baseUrl = 'https://alertaseguro-backend.onrender.com'; 
 
-  constructor(
-    private auth: Auth,
-    private firestore: Firestore
-  ) {}
+  constructor() {}
 
-  /** Criar usuário */
-  async signUp(email: string, password: string, name?: string): Promise<User> {
-    const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
-    const user = userCredential.user;
+  // ======================
+  // Registro
+  // ======================
+  async signUp(email: string, password: string, nome: string) {
+    try {
+      console.log('Tentando registrar em:', `${this.baseUrl}/auth/register`);
 
-    if (user) {
-      const userRef = doc(this.firestore, `users/${user.uid}`);
-      await setDoc(userRef, {
-        name: name || null,
-        email,
-        createdAt: serverTimestamp()
+      const response = await CapacitorHttp.post({
+        url: `${this.baseUrl}/auth/register`,
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        data: { email, password, nome },
+        webFetchExtra: {
+          mode: 'cors' // ✅ Ajuda em PWA e apps híbridos
+        },
+        connectTimeout: 10000, // 10 segundos
+        readTimeout: 10000
       });
+
+      const data = response.data;
+      console.log('Registro bem-sucedido:', data);
+
+      localStorage.setItem('uid', data.uid);
+      localStorage.setItem('email', email);
+
+      return data;
+    } catch (error: any) {
+      console.error('Erro completo no registro:', JSON.stringify(error));
+      throw new Error(error.error?.message || 'Erro ao cadastrar usuário');
     }
-
-    return user;
   }
 
-  /** Login */
-  async signIn(email: string, password: string): Promise<User> {
-    const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
-    return userCredential.user;
+  // ======================
+  // Login
+  // ======================
+  async signIn(email: string, password: string) {
+    try {
+      console.log('Tentando login em:', `${this.baseUrl}/auth/login`);
+
+      const response = await CapacitorHttp.post({
+        url: `${this.baseUrl}/auth/login`,
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        data: { email, password },
+        webFetchExtra: {
+          mode: 'cors'
+        },
+        connectTimeout: 10000,
+        readTimeout: 10000
+      });
+
+      const data = response.data;
+      console.log('Login bem-sucedido:', data);
+
+      localStorage.setItem('uid', data.uid);
+      localStorage.setItem('email', data.email);
+
+      return data;
+    } catch (error: any) {
+      console.error('Erro completo no login:', JSON.stringify(error));
+      throw new Error(error.error?.message || 'Erro ao logar usuário');
+    }
   }
 
-  /** Logout */
-  async signOut(): Promise<void> {
-    await signOut(this.auth);
+  // ======================
+  // Logout
+  // ======================
+  async signOut() {
+    localStorage.removeItem('uid');
+    localStorage.removeItem('email');
   }
 
-  /** Deletar conta do usuário */
-  async deleteMyAccount(password: string): Promise<void> {
-    const user = this.auth.currentUser;
-    if (!user || !user.email) throw new Error('Nenhum usuário logado');
-
-    // Reautenticar
-    const credential = EmailAuthProvider.credential(user.email, password);
-    await reauthenticateWithCredential(user, credential);
-
-    // Deletar doc do Firestore
-    const userRef = doc(this.firestore, `users/${user.uid}`);
-    await deleteDoc(userRef).catch(() => {});
-
-    // Deletar Auth
-    await user.delete();
+  // ======================
+  // Retorna apenas o UID
+  // ======================
+  getUid() {
+    return localStorage.getItem('uid');
   }
 
-  /** Observable do usuário logado */
-  getUserObservable(): Observable<User | null> {
-    return authState(this.auth);
-  }
-
-  /** Retorna o userId atual */
-  getCurrentUserId(): string | null {
-    return this.auth.currentUser?.uid || null;
+  // ======================
+  // Retorna o usuário atual (uid + email)
+  // ======================
+  async getCurrentUser() {
+    const uid = localStorage.getItem('uid');
+    const email = localStorage.getItem('email');
+    if (!uid) return null;
+    return { uid, email };
   }
 }
