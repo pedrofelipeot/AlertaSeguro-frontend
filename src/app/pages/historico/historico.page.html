@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar class="header-blur">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Histórico</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen>
+  <div class="page-wrapper">
+
+
+      <!-- TÍTULO DO DISPOSITIVO -->
+      <div class="device-header" *ngIf="espName">
+        <h2>{{ espName }}</h2>
+        <p class="mac">MAC: {{ mac }}</p>
+      </div>
+
+      <!-- EVENTOS -->
+      <div *ngFor="let e of events" class="event-card fade">
+        <div class="event-top">
+          <div class="left">
+            <div class="date">{{ e.data }}</div>
+            <div class="time">{{ e.hora }}</div>
+          </div>
+
+          <div class="right">
+            <div class="device">{{ e.deviceName || espName }}</div>
+          </div>
+        </div>
+
+        <div class="event-msg">
+          {{ formatMessage(e) }}
+        </div>
+      </div>
+
+    </div>
+</ion-content>

@@ -9,7 +9,6 @@
 
 <ion-content fullscreen>
 
-  <!-- Perfil -->
   <div class="profile-box">
     <ion-avatar>
       <img src="https://i.pravatar.cc/150?img=3" alt="Avatar" />
@@ -26,7 +25,6 @@
 
   <div class="menu-divider"></div>
 
-  <!-- Menu de opções -->
   <ion-list class="menu-list" lines="none">
 
     <ion-item button routerLink="/home">
@@ -42,6 +40,17 @@
     <ion-item button routerLink="/cadastrar-sensor">
       <ion-icon name="hardware-chip-outline" slot="start"></ion-icon>
       <ion-label>Cadastrar Sensor</ion-label>
+    </ion-item>
+
+    <ion-item button routerLink="/sensores">
+      <ion-icon name="radio-outline"></ion-icon>
+
+      <ion-label>Sensores</ion-label>
+    </ion-item>
+
+    <ion-item button (click)="goToHorarios()">
+      <ion-icon name="time-outline" slot="start"></ion-icon>
+      <ion-label>Horários</ion-label>
     </ion-item>
 
     <ion-item button routerLink="/sobre">

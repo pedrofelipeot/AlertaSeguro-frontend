@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
 
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { EventService } from '../services/event-service';
-import { getAuth } from 'firebase/auth';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -21,11 +21,18 @@ import { getAuth } from 'firebase/auth';
 })
 export class HomePage implements OnInit {
 
+  // 🔥 Nova flag que bloqueia a tela até tudo carregar
+  loadingHome = true;
+
   userId = '';
   mac = '';
   events: any[] = [];
   lastEvent: any = null;
+
+  espName = '';
   espDevices: any[] = [];
+
+  hasDevices = false;
 
   private baseUrl = 'https://alertaseguro-backend.onrender.com';
 
@@ -36,60 +43,108 @@ export class HomePage implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.loadingHome = true; // garante que nada apareça antes
     this.loadUser();
   }
 
-  loadUser() {
-    const auth = getAuth();
-    this.userId = auth.currentUser?.uid ?? '';
+  // =====================================================
+  // 🔥 CARREGAR USUÁRIO
+  // =====================================================
+  async loadUser() {
+    const uid = localStorage.getItem('uid');
 
-    if (this.userId) {
-      this.loadEspDevices();
-    }
-  }
-
-  // ✔ CORRIGIDO — rota certa do backend
-  loadEspDevices() {
-    const url = `${this.baseUrl}/users/${this.userId}/esp/list`;
-
-    this.http.get<any[]>(url).subscribe({
-      next: (devices) => {
-        console.log('Dispositivos:', devices);
-
-        this.espDevices = devices;
-
-        if (devices.length > 0) {
-          this.mac = devices[0].mac;  
-          this.loadEvents();
-        }
-      },
-      error: (err) => {
-        console.error('Erro ao carregar dispositivos:', err);
-      }
-    });
-  }
-
-  loadEvents() {
-    console.log('📌 Buscando eventos do ESP:', this.mac, 'User:', this.userId);
-
-    if (!this.mac || !this.userId) {
-      console.log('❌ mac ou userId vazio');
+    if (!uid) {
+      this.router.navigateByUrl('/login');
       return;
     }
 
-    this.eventService.getEvents(this.userId, this.mac).subscribe({
-      next: (data) => {
-        console.log('Eventos recebidos:', data);
-        this.events = data;
-        this.lastEvent = data.length > 0 ? data[0] : null;
-      },
-      error: (err) => {
-        console.error('Erro ao carregar eventos:', err);
-      }
-    });
+    this.userId = uid;
+    this.loadEspDevices();
   }
 
+  goToHistorico(mac: string) {
+    this.router.navigate(['/historico', mac]);
+  }
+
+  // =====================================================
+  // 🔥 CARREGAR DISPOSITIVOS DO USUÁRIO
+  // =====================================================
+  loadEspDevices() {
+    const url = `${this.baseUrl}/users/${this.userId}/esp/list`;
+
+    this.http.get<any[]>(url)
+      .pipe(finalize(() => {})) // loading global trata
+      .subscribe({
+        next: (devices) => {
+          this.espDevices = devices;
+          this.hasDevices = devices.length > 0;
+
+          if (!this.hasDevices) {
+            // Desbloqueia tela mesmo sem dispositivos
+            this.loadingHome = false;
+            return;
+          }
+
+          this.mac = devices[0].mac.trim();
+          this.espName = devices[0].nome || "Sensor";
+
+          localStorage.setItem('selected_mac', this.mac);
+
+          this.loadEvents();
+        },
+        error: (err) => {
+          console.error("❌ Erro ao carregar dispositivos:", err);
+          this.loadingHome = false;
+        }
+      });
+  }
+
+  // =====================================================
+  // 🔥 CARREGAR EVENTOS
+  // =====================================================
+  // =====================================================
+// 🔥 CARREGAR EVENTOS
+// =====================================================
+loadEvents() {
+  if (!this.userId || !this.mac) {
+    this.loadingHome = false;
+    return;
+  }
+
+  this.eventService.getEvents(this.userId, this.mac)
+    .pipe(
+      finalize(() => {
+        // 👇 Agora só libera a tela quando TUDO terminou
+        this.loadingHome = false;
+      })
+    )
+    .subscribe({
+      next: (resp) => {
+
+        // 🔥 MANTÉM NOME DO SENSOR (opcional)
+        if (resp.length > 0) {
+          this.espName = resp[0].deviceName || this.espName;
+        }
+
+        // 🔥 SALVA APENAS AS 3 ÚLTIMAS NOTIFICAÇÕES
+        this.events = resp.slice(0, 3);
+
+        // 🔥 O último evento REAL segue sendo o primeiro da lista completa
+        this.lastEvent = resp.length > 0 ? resp[0] : null;
+      },
+      error: (err) => {
+        console.error('❌ Erro ao carregar eventos:', err);
+      }
+    });
+}
+
+
+  // Navegação
   goToMenu() {
     this.router.navigateByUrl('/menu');
+  }
+
+  goToAddDevice() {
+    this.router.navigateByUrl('/cadastro-dispositivo');
   }
 }

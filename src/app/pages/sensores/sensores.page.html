@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar class="header-blur">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Sensores</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-refresher slot="fixed" (ionRefresh)="atualizar($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-list>
+    <ion-item *ngFor="let s of sensores" detail="false" class="sensor-card">
+
+      <ion-icon name="hardware-chip-outline" slot="start" class="icon"></ion-icon>
+
+      <ion-label>
+        <h2>{{ s.nome }}</h2>
+        <p><strong>MAC:</strong> {{ s.mac }}</p>
+        <p *ngIf="s.localizacao"><strong>Local:</strong> {{ s.localizacao }}</p>
+        <p *ngIf="s.tipo"><strong>Tipo:</strong> {{ s.tipo }}</p>
+      </ion-label>
+
+    </ion-item>
+
+    <div *ngIf="sensores.length === 0" class="empty">
+      Nenhum sensor cadastrado.
+    </div>
+  </ion-list>
+
+</ion-content>

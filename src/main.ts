@@ -19,14 +19,43 @@ import {
   powerOutline,
   toggleOutline,
   notificationsOutline,
-  warningOutline
+  warningOutline,
+  timeOutline,
+  listOutline,
+
+  // 🔥 ÍCONES ESPECIALMENTE PARA "SENSORES"
+  radioOutline,
+  radioSharp,
+  pulseOutline,
+  pulseSharp,
+  wifiOutline,
+  wifiSharp,
+  scanOutline,
+  scanSharp,
+  barcodeOutline,
+  barcodeSharp,
+  speedometerOutline,
+  speedometerSharp,
+  colorFilterOutline,
+  analyticsOutline,
+  analyticsSharp,
+  constructOutline,
+  cubeOutline,
+  bulbOutline,
+  flashOutline,
+  cellularOutline
 } from 'ionicons/icons';
+
 import { defineCustomElements } from 'ionicons/dist/loader';
 
-// Ativa o carregamento dos componentes do Ionicons
+// HTTP + Interceptors
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { loadingInterceptor } from './app/interceptors/loading.interceptor';
+
+// Ativa Ionicons
 defineCustomElements(window);
 
-// ✅ Registra todos os ícones utilizados no app
+// Registra todos os ícones usados no app
 addIcons({
   arrowBackOutline,
   logOutOutline,
@@ -40,12 +69,42 @@ addIcons({
   powerOutline,
   toggleOutline,
   notificationsOutline,
-  warningOutline
+  warningOutline,
+  timeOutline,
+  listOutline,
+
+  // 🔥 todos os ícones úteis para sensores
+  radioOutline,
+  radioSharp,
+  pulseOutline,
+  pulseSharp,
+  wifiOutline,
+  wifiSharp,
+  scanOutline,
+  scanSharp,
+  barcodeOutline,
+  barcodeSharp,
+  speedometerOutline,
+  speedometerSharp,
+  colorFilterOutline,
+  analyticsOutline,
+  analyticsSharp,
+  constructOutline,
+  cubeOutline,
+  bulbOutline,
+  flashOutline,
+  cellularOutline
 });
 
-// ✅ Inicializa o Firebase
+// Inicializa Firebase
 initializeApp(environment.firebaseConfig);
 
-// ✅ Inicializa o app principal Angular + Ionic
-bootstrapApplication(AppComponent, appConfig)
-  .catch(err => console.error(err));
+// Bootstrap Angular + Ionic
+bootstrapApplication(AppComponent, {
+  ...appConfig,
+  providers: [
+    ...(appConfig.providers ?? []),
+    provideHttpClient(withInterceptors([loadingInterceptor]))
+  ]
+})
+.catch(err => console.error(err));

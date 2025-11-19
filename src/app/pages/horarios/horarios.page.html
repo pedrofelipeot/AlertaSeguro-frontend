@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home" color="light"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Horários {{ espName }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen>
+
+  <p *ngIf="errorMsg">{{ errorMsg }}</p>
+  <p *ngIf="!errorMsg && horarios.length === 0">Nenhum horário encontrado.</p>
+
+  <ion-list *ngIf="horarios.length > 0">
+    <ion-item *ngFor="let h of horarios">
+      <ion-label>
+        <h2>{{ h.inicio }} - {{ h.fim }}</h2>
+        <p>Dias: {{ formatDias(h.dias) }}</p>
+        <p *ngIf="h.createdAt">Criado em: {{ h.createdAt }}</p>
+        <p>Status: {{ h.ativo ? 'Ativo' : 'Inativo' }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+</ion-content>

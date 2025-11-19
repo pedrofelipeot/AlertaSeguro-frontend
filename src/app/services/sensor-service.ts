@@ -1,4 +1,7 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { GlobalLoadingService } from '../services/global-loading.service';
+import { firstValueFrom } from 'rxjs';
 
 export interface Sensor {
   nome: string;
@@ -12,36 +15,53 @@ export interface Sensor {
 })
 export class SensorService {
 
-  private baseUrl = 'https://alertaseguro-backend.onrender.com'; // endereço do backend
+  private baseUrl = 'https://alertaseguro-backend.onrender.com';
 
-  constructor() {}
+  constructor(
+    private http: HttpClient,
+    private loading: GlobalLoadingService
+  ) {}
 
   /**
-   * Adiciona um sensor na subcoleção de ESPs do usuário logado
+   * Adiciona sensor
    */
   async addSensor(sensor: Sensor) {
-    const uid = localStorage.getItem('uid'); // UID do usuário logado
-    if (!uid) {
-      throw new Error('Usuário não logado');
-    }
+    const uid = localStorage.getItem('uid');
+    if (!uid) throw new Error('Usuário não logado');
 
-    const response = await fetch(`${this.baseUrl}/esp/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+    this.loading.show();
+
+    try {
+      const req = this.http.post(`${this.baseUrl}/esp/register`, {
         uid,
         mac: sensor.mac,
         nome: sensor.nome,
         localizacao: sensor.localizacao || '',
         tipo: sensor.tipo || ''
-      })
-    });
+      });
 
-    if (!response.ok) {
-      const err = await response.json();
-      throw new Error(err.error || 'Erro ao cadastrar sensor');
+      return await firstValueFrom(req);
+
+    } finally {
+      this.loading.hide();
     }
+  }
 
-    return await response.json();
+  /**
+   * Lista sensores
+   */
+  async getSensores() {
+    const uid = localStorage.getItem('uid');
+    if (!uid) throw new Error('Usuário não logado');
+
+    this.loading.show();
+
+    try {
+      const req = this.http.get<any[]>(`${this.baseUrl}/users/${uid}/esp/list`);
+      return await firstValueFrom(req);
+
+    } finally {
+      this.loading.hide();
+    }
   }
 }

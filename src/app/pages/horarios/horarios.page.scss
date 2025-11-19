@@ -1,0 +1,119 @@
+/* Fundo */
+ion-content {
+  --background: linear-gradient(160deg, #0f1520 0%, #1b2535 100%);
+}
+
+/* Scroll normal (NÃO centraliza mais) */
+ion-content::part(scroll) {
+  padding: 20px;
+  display: block !important;
+}
+
+/* Header com blur */
+ion-toolbar {
+  --background: rgba(15, 21, 32, 0.75);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #fff;
+  box-shadow: 0 1px 8px rgba(0,0,0,0.35);
+}
+
+ion-title {
+  color: #fff;
+  font-weight: 600;
+}
+
+/* Back button */
+ion-back-button::part(icon) {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+  stroke: #ffffff !important;
+}
+
+/* LISTA */
+ion-list {
+  background: transparent;
+  padding: 0;
+  margin: 0;
+}
+
+/* CARD / ITEM */
+ion-item {
+  --background: #1e2633;
+  border-radius: 16px;
+  margin-bottom: 18px;
+  padding: 14px;
+
+  box-shadow: 0 12px 28px rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.05);
+
+  /* animação */
+  opacity: 0;
+  transform: translateY(12px);
+  animation: fadeUp 0.45s ease forwards;
+}
+
+ion-item::part(native) {
+  border-radius: 16px;
+}
+
+/* Faixa esquerda */
+ion-item {
+  position: relative;
+}
+
+ion-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 12px;
+  bottom: 12px;
+  width: 4px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #4cc9f0, #4361ee);
+}
+
+/* Texto */
+ion-label h2 {
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+ion-label p {
+  color: #cfd8e3;
+  margin: 3px 0;
+  font-size: 14px;
+}
+
+/* Spinner */
+ion-spinner {
+  display: block;
+  margin: 40px auto;
+  --color: #4cc9f0;
+}
+
+ion-content::part(scroll) {
+  padding-top: 80px !important; /* empurra os cards para baixo */
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 20px;
+  display: block !important;
+}
+
+/* Mensagens */
+p {
+  text-align: center;
+  color: #cfd8e3;
+  font-size: 15px;
+  padding: 12px;
+}
+
+/* Animação */
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
