@@ -24,32 +24,63 @@
 
           <ion-item class="input-item">
             <ion-label position="stacked">Nome do Sensor</ion-label>
-            <ion-input type="text" [(ngModel)]="sensor.nome" name="nome" required></ion-input>
+            <ion-input 
+              type="text" 
+              [(ngModel)]="sensor.nome" 
+              name="nome" 
+              required
+              [disabled]="enviando">
+            </ion-input>
           </ion-item>
 
           <ion-item class="input-item">
             <ion-label position="stacked">Localização</ion-label>
-            <ion-input type="text" [(ngModel)]="sensor.localizacao" name="localizacao"></ion-input>
+            <ion-input 
+              type="text" 
+              [(ngModel)]="sensor.localizacao" 
+              name="localizacao"
+              [disabled]="enviando">
+            </ion-input>
           </ion-item>
 
           <ion-item class="input-item">
             <ion-label position="stacked">Tipo de Sensor</ion-label>
-            <ion-input type="text" [(ngModel)]="sensor.tipo" name="tipo"></ion-input>
+            <ion-input 
+              type="text" 
+              [(ngModel)]="sensor.tipo" 
+              name="tipo"
+              [disabled]="enviando">
+            </ion-input>
           </ion-item>
 
           <ion-item class="input-item">
             <ion-label position="stacked">MAC Address / Código do ESP32</ion-label>
-            <ion-input type="text" [(ngModel)]="sensor.mac" name="mac" required></ion-input>
+            <ion-input 
+              type="text" 
+              [(ngModel)]="sensor.mac" 
+              name="mac" 
+              required
+              [disabled]="enviando">
+            </ion-input>
           </ion-item>
 
+          <!-- BOTÃO COM LOADING -->
           <ion-button 
             expand="block" 
-            type="submit" 
+            type="submit"
             class="save-button"
-            [disabled]="!sensorForm.form.valid"
-          >
-            <ion-icon slot="start" name="add-outline"></ion-icon>
-            Cadastrar Sensor
+            [disabled]="!sensorForm.form.valid || enviando">
+
+            <ng-container *ngIf="!enviando; else loadingTpl">
+              <ion-icon slot="start" name="add-outline"></ion-icon>
+              Cadastrar Sensor
+            </ng-container>
+
+            <ng-template #loadingTpl>
+              <ion-spinner name="dots"></ion-spinner>
+              <span style="margin-left:8px;">Cadastrando...</span>
+            </ng-template>
+
           </ion-button>
 
         </form>

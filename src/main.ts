@@ -1,7 +1,6 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
 import { appConfig } from '../src/app.config';
-import { initializeApp } from 'firebase/app';
 import { environment } from './environments/environment';
 
 // Ionicons
@@ -22,8 +21,6 @@ import {
   warningOutline,
   timeOutline,
   listOutline,
-
-  // 🔥 ÍCONES ESPECIALMENTE PARA "SENSORES"
   radioOutline,
   radioSharp,
   pulseOutline,
@@ -43,7 +40,8 @@ import {
   cubeOutline,
   bulbOutline,
   flashOutline,
-  cellularOutline
+  cellularOutline,
+  trashOutline  // 🔹 Adicionado
 } from 'ionicons/icons';
 
 import { defineCustomElements } from 'ionicons/dist/loader';
@@ -52,10 +50,28 @@ import { defineCustomElements } from 'ionicons/dist/loader';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { loadingInterceptor } from './app/interceptors/loading.interceptor';
 
+// Firebase
+import { provideFirebaseApp, initializeApp as initFirebase } from '@angular/fire/app';
+import { provideAuth, getAuth } from '@angular/fire/auth';
+
+// ✔ Google Auth (Capacitor)
+import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
+
+// ======================================================
+// 🔥 OBRIGATÓRIO → Inicializar GoogleAuth antes de tudo
+// ======================================================
+GoogleAuth.initialize({
+  clientId: '706008625809-gaelv7rqb03avsfpnh55pn61o9k4gfkp.apps.googleusercontent.com',
+  scopes: ['profile', 'email'],
+  grantOfflineAccess: true
+});
+
+// ======================================
 // Ativa Ionicons
+// ======================================
 defineCustomElements(window);
 
-// Registra todos os ícones usados no app
+// Registra ícones
 addIcons({
   arrowBackOutline,
   logOutOutline,
@@ -72,8 +88,6 @@ addIcons({
   warningOutline,
   timeOutline,
   listOutline,
-
-  // 🔥 todos os ícones úteis para sensores
   radioOutline,
   radioSharp,
   pulseOutline,
@@ -93,18 +107,24 @@ addIcons({
   cubeOutline,
   bulbOutline,
   flashOutline,
-  cellularOutline
+  cellularOutline,
+  trashOutline  // 🔹 Registrado para deletar sensores
 });
 
-// Inicializa Firebase
-initializeApp(environment.firebaseConfig);
-
-// Bootstrap Angular + Ionic
+// ======================================
+// Bootstrap Angular + Ionic + Firebase
+// ======================================
 bootstrapApplication(AppComponent, {
   ...appConfig,
   providers: [
     ...(appConfig.providers ?? []),
-    provideHttpClient(withInterceptors([loadingInterceptor]))
-  ]
+
+    // 🔹 Firebase
+    provideFirebaseApp(() => initFirebase(environment.firebaseConfig)),
+    provideAuth(() => getAuth()),
+
+    // 🔹 HTTP + loading interceptor
+    provideHttpClient(withInterceptors([loadingInterceptor])),
+  ],
 })
 .catch(err => console.error(err));

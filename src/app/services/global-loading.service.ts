@@ -1,3 +1,4 @@
+// global-loading.service.ts
 import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
@@ -28,10 +29,19 @@ export class GlobalLoadingService {
 
     if (this.counter <= 0) {
       this.counter = 0;
+
       if (this.overlay) {
         this.overlay.remove();
         this.overlay = null;
       }
+    }
+  }
+
+  forceHide() {
+    this.counter = 0;
+    if (this.overlay) {
+      this.overlay.remove();
+      this.overlay = null;
     }
   }
 }

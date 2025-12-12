@@ -4,10 +4,11 @@
   <div class="content">
     <div class="form-container">
 
-      <!-- Seta de voltar -->
-      <ion-button fill="clear" routerLink="/welcome" class="back-button">
-        <ion-icon name="arrow-back-outline"></ion-icon>
-      </ion-button>
+    <!-- Seta de voltar -->
+<ion-button fill="clear" class="back-button" (click)="goBack()">
+  <ion-icon name="arrow-back-outline"></ion-icon>
+</ion-button>
+
 
       <h1>Login</h1>
       <p>Entre com sua conta para continuar</p>
@@ -24,7 +25,15 @@
         </ion-item>
       </div>
 
-      <ion-button expand="block" class="login" (click)="onSignIn()">Entrar</ion-button>
+      <!-- Botão de login normal -->
+      <ion-button expand="block" class="login" (click)="fazerLogin()">Entrar</ion-button>
+
+      <!-- Botão de login com Google -->
+      <ion-button expand="block" fill="outline" color="danger" (click)="loginGoogle()" style="margin-top: 15px;">
+        <ion-icon slot="start" name="logo-google"></ion-icon>
+        Entrar com Google
+      </ion-button>
+
     </div>
   </div>
 </ion-content>

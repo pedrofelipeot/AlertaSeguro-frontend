@@ -10,48 +10,61 @@
 
 <ion-content fullscreen>
 
+  <!-- CONTEÚDO PRINCIPAL -->
   <ng-container *ngIf="!loadingHome">
 
     <div class="home-wrapper">
 
-      <!-- SEM DISPOSITIVOS -->
-      <div class="mini-card fade" *ngIf="!hasDevices" style="text-align:center; display:block;">
+      <!-- ===============================
+           SEM DISPOSITIVOS
+      ================================ -->
+      <div class="mini-card fade"
+           *ngIf="devicesLoaded && !hasDevices"
+           style="text-align:center; display:block;">
+
         <h2 style="margin-bottom: 8px;">Nenhum dispositivo cadastrado</h2>
         <p style="margin-bottom: 14px; color:#b8c3d1;">
           Cadastre um dispositivo para começar a receber notificações.
         </p>
-        <ion-button expand="block" color="primary" (click)="goToAddDevice()">
+
+        <ion-button expand="block"
+                    color="primary"
+                    (click)="goToAddDevice()">
           Cadastrar dispositivo
         </ion-button>
+
       </div>
 
-      <!-- EXISTE DISPOSITIVO -->
-      <ng-container *ngIf="hasDevices">
+      <!-- ===============================
+           EXISTE DISPOSITIVO
+      ================================ -->
+      <ng-container *ngIf="devicesLoaded && hasDevices">
 
-       <!-- 🔥 ÚLTIMO ALERTA -->
-<div class="mini-card alert-card fade" *ngIf="lastEvent">
+        <!-- ÚLTIMO ALERTA -->
+        <div class="mini-card alert-card fade" *ngIf="lastEvent">
 
-  <div class="alert-header">
-    <ion-icon name="alert-circle-outline" class="alert-header-icon"></ion-icon>
-    <span class="alert-header-title">Último alerta</span>
-  </div>
+          <div class="alert-header">
+            <ion-icon name="alert-circle-outline"
+                      class="alert-header-icon"></ion-icon>
+            <span class="alert-header-title">Último alerta</span>
+          </div>
 
-  <div style="display:flex; gap:12px; align-items:center;">
-    <div>
-      <h2>{{ lastEvent.mensagem }}</h2>
-      <p>{{ espName }} • {{ lastEvent.hora }}</p>
-    </div>
-  </div>
+          <div style="display:flex; gap:12px; align-items:center;">
+            <div>
+              <h2>{{ lastEvent.mensagem }}</h2>
+              <p>{{ espName }} • {{ lastEvent.hora }}</p>
+            </div>
+          </div>
 
-</div>
+        </div>
 
-
-
-        <!-- Histórico -->
+        <!-- HISTÓRICO -->
         <div class="history fade">
+
           <h2>Histórico de Notificações</h2>
 
-          <div *ngIf="events.length === 0" style="padding:20px; text-align:center; opacity:0.7;">
+          <div *ngIf="events.length === 0"
+               style="padding:20px; text-align:center; opacity:0.7;">
             Nenhuma notificação registrada ainda.
           </div>
 
@@ -66,11 +79,14 @@
             <div class="table-row" *ngFor="let e of events">
               <span>{{ e.data }} - {{ e.hora }}</span>
               <span>{{ e.mensagem }}</span>
-              <span style="text-align:center;">{{ e.deviceName || espName }}</span>
+              <span style="text-align:center;">
+                {{ e.deviceName || espName }}
+              </span>
             </div>
 
             <div style="margin-top: 16px; text-align:center;">
-              <ion-button expand="block" fill="outline" (click)="goToHistorico(mac)">
+              <ion-button expand="block" fill="outline"
+                          (click)="goToHistorico(mac)">
                 Ver todas notificações
               </ion-button>
             </div>
@@ -80,7 +96,6 @@
         </div>
 
       </ng-container>
-
     </div>
 
   </ng-container>

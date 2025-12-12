@@ -1,19 +1,34 @@
-/* Fundo */
+/* ============================================
+   FUNDO COM GRADIENTE + ANIMAÇÃO SUAVE
+============================================ */
 ion-content {
   --background: linear-gradient(160deg, #0f1520 0%, #1b2535 100%);
+  color: #fff;
+  padding: 0;
 }
 
-/* Scroll normal (NÃO centraliza mais) */
+/* Scroll normal */
 ion-content::part(scroll) {
-  padding: 20px;
+  padding-top: 80px !important; /* empurra os cards para baixo */
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 20px;
   display: block !important;
+  animation: fadeBg 1.2s ease;
 }
 
-/* Header com blur */
+@keyframes fadeBg {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ============================================
+   HEADER COM BLUR
+============================================ */
 ion-toolbar {
   --background: rgba(15, 21, 32, 0.75);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
   color: #fff;
   box-shadow: 0 1px 8px rgba(0,0,0,0.35);
 }
@@ -23,45 +38,42 @@ ion-title {
   font-weight: 600;
 }
 
-/* Back button */
 ion-back-button::part(icon) {
   color: #ffffff !important;
   fill: #ffffff !important;
   stroke: #ffffff !important;
 }
 
-/* LISTA */
+/* ============================================
+   CARD / ITEM
+============================================ */
 ion-list {
   background: transparent;
   padding: 0;
   margin: 0;
 }
 
-/* CARD / ITEM */
 ion-item {
-  --background: #1e2633;
-  border-radius: 16px;
+  --background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
   margin-bottom: 18px;
   padding: 14px;
-
+  position: relative; /* necessário para botão */
+  overflow: visible;  /* garante que botão fique visível */
+  display: flex;
+  align-items: center; /* centraliza conteúdo verticalmente */
   box-shadow: 0 12px 28px rgba(0,0,0,0.35);
   border: 1px solid rgba(255,255,255,0.05);
-
-  /* animação */
   opacity: 0;
   transform: translateY(12px);
   animation: fadeUp 0.45s ease forwards;
 }
 
 ion-item::part(native) {
-  border-radius: 16px;
+  border-radius: 12px;
 }
 
-/* Faixa esquerda */
-ion-item {
-  position: relative;
-}
-
+/* Faixa esquerda do card */
 ion-item::before {
   content: "";
   position: absolute;
@@ -73,10 +85,12 @@ ion-item::before {
   background: linear-gradient(180deg, #4cc9f0, #4361ee);
 }
 
-/* Texto */
+/* ============================================
+   TEXTOS
+============================================ */
 ion-label h2 {
   color: #fff;
-  font-size: 18px;
+  font-size: 1.2rem;
   font-weight: 600;
   margin-bottom: 6px;
 }
@@ -84,7 +98,7 @@ ion-label h2 {
 ion-label p {
   color: #cfd8e3;
   margin: 3px 0;
-  font-size: 14px;
+  font-size: 0.85rem;
 }
 
 /* Spinner */
@@ -94,15 +108,7 @@ ion-spinner {
   --color: #4cc9f0;
 }
 
-ion-content::part(scroll) {
-  padding-top: 80px !important; /* empurra os cards para baixo */
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-bottom: 20px;
-  display: block !important;
-}
-
-/* Mensagens */
+/* Mensagens de erro ou vazio */
 p {
   text-align: center;
   color: #cfd8e3;
@@ -110,7 +116,29 @@ p {
   padding: 12px;
 }
 
-/* Animação */
+/* ============================================
+   BOTÃO DE LIXEIRA
+============================================ */
+ion-item ion-button {
+  position: relative;
+  z-index: 10;
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+ion-item ion-button ion-icon {
+  font-size: 32px; /* 🔹 Mesma altura do Sensores */
+  color: #ff4d4d;
+}
+
+/* ============================================
+   ANIMAÇÃO DOS CARDS
+============================================ */
 @keyframes fadeUp {
   to {
     opacity: 1;

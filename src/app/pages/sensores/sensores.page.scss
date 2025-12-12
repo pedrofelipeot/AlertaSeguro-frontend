@@ -17,12 +17,11 @@ ion-content::part(scroll) {
   to   { opacity: 1; }
 }
 
-
 /* ============================================
    HEADER COM BLUR, SOMBRA E SETA BRANCA
 ============================================ */
 .header-blur {
-  --background: rgba(15, 21, 32, 0.75); /* Azul escuro translúcido */
+  --background: rgba(15, 21, 32, 0.75);
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
@@ -37,18 +36,15 @@ ion-content::part(scroll) {
   font-size: 1.25rem;
 }
 
-/* === Seta de voltar branca (definitivo) === */
 .header-blur ion-back-button::part(icon),
 .header-blur ion-button ion-icon {
   color: #ffffff !important;
   font-size: 1.6rem;
 }
 
-/* fallback */
 .header-blur ion-back-button {
   --color: #fff !important;
 }
-
 
 /* ============================================
    ÁREA DE LOADING
@@ -59,18 +55,21 @@ ion-content::part(scroll) {
   margin-top: 40px;
 }
 
-
 /* ============================================
    CARD DOS SENSORES
 ============================================ */
 .sensor-card {
   --background: rgba(255, 255, 255, 0.03);
-  margin: 10px;
   border-radius: 12px;
+  margin: 10px;
   padding: 8px;
   backdrop-filter: blur(6px);
   --border-color: rgba(255, 255, 255, 0.1);
   border: 1px solid var(--border-color);
+  position: relative; /* necessário para z-index do botão */
+  overflow: visible;  /* garante que o botão fique visível fora do item */
+  display: flex;
+  align-items: center; /* centraliza verticalmente os conteúdos do ion-item */
 }
 
 /* ícone do sensor */
@@ -91,6 +90,25 @@ p {
   opacity: 0.8;
 }
 
+/* ============================================
+   BOTÃO DE LIXEIRA
+============================================ */
+.sensor-card ion-button {
+  position: relative;
+  z-index: 10;
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sensor-card ion-button ion-icon {
+  font-size: 32px; /* 🔹 Aumenta a lixeira */
+  color: #ff4d4d;
+}
 
 /* ============================================
    MENSAGEM QUANDO NÃO HÁ SENSORES
@@ -100,4 +118,17 @@ p {
   padding: 25px;
   opacity: 0.6;
   font-size: 1rem;
+}
+
+/* Remove o fundo e padding ao redor da lista */
+ion-list {
+  background: transparent !important;
+  --background: transparent !important;
+}
+
+/* Remove o fundo padrão do wrapper do ion-list */
+ion-list::part(container) {
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }

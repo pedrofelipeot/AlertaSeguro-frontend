@@ -7,14 +7,16 @@ export const AuthGuard: CanActivateFn = () => {
   const auth = inject(AuthService);
   const router = inject(Router);
 
-  const uid = auth.getUid();
+  // Pega o usuário atual
+  const user = auth.getCurrentUser();
+  const uid = user?.uid || null;
 
   if (uid) {
     console.log('[AuthGuard] acesso permitido');
-    return true;
+    return true; // usuário logado → permite acesso
   }
 
   console.log('[AuthGuard] bloqueado → redirecionando para login');
   router.navigate(['/login'], { replaceUrl: true });
-  return false;
+  return false; // usuário não logado → bloqueia acesso
 };

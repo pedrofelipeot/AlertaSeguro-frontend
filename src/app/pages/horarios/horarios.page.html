@@ -3,24 +3,70 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/home" color="light"></ion-back-button>
     </ion-buttons>
-    <ion-title>Horários {{ espName }}</ion-title>
+    <ion-title>Todos os horários</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content fullscreen>
 
-  <p *ngIf="errorMsg">{{ errorMsg }}</p>
-  <p *ngIf="!errorMsg && horarios.length === 0">Nenhum horário encontrado.</p>
+  <!-- Puxar para atualizar -->
+  <ion-refresher slot="fixed" (ionRefresh)="loadHorarios($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
 
-  <ion-list *ngIf="horarios.length > 0">
+  <div class="ion-padding">
+    <p *ngIf="loading">Carregando horários...</p>
+
+    <p *ngIf="errorMsg">{{ errorMsg }}</p>
+
+    <p *ngIf="!loading && !errorMsg && horarios.length === 0">
+      Nenhum horário encontrado.
+    </p>
+  </div>
+
+  <!-- LISTA DE HORÁRIOS -->
+  <ion-list *ngIf="!loading && !errorMsg && horarios.length > 0">
+
     <ion-item *ngFor="let h of horarios">
+
       <ion-label>
-        <h2>{{ h.inicio }} - {{ h.fim }}</h2>
-        <p>Dias: {{ formatDias(h.dias) }}</p>
-        <p *ngIf="h.createdAt">Criado em: {{ h.createdAt }}</p>
-        <p>Status: {{ h.ativo ? 'Ativo' : 'Inativo' }}</p>
+
+        <h2>
+          {{ h.inicio }} - {{ h.fim }}
+        </h2>
+
+        <p>
+          <strong>Sensor:</strong> {{ h.deviceName || h.mac }}
+        </p>
+
+        <p>
+          <strong>Dias:</strong> {{ formatDias(h.dias) }}
+        </p>
+
+        <p *ngIf="h.createdAt">
+          <strong>Criado em:</strong> {{ h.createdAt | date:'dd/MM/yyyy HH:mm' }}
+        </p>
+
+        <p>
+          <strong>Status:</strong>
+          <ion-text [color]="h.ativo ? 'success' : 'medium'">
+            {{ h.ativo ? 'Ativo agora' : 'Inativo agora' }}
+          </ion-text>
+        </p>
+
       </ion-label>
+
+      <!-- BOTÃO DE EXCLUIR -->
+      <ion-button
+        fill="clear"
+        color="danger"
+        slot="end"
+        (click)="removerHorario(h)">
+        <ion-icon name="trash-outline"></ion-icon>
+      </ion-button>
+
     </ion-item>
+
   </ion-list>
 
 </ion-content>

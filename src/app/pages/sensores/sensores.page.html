@@ -25,6 +25,12 @@
         <p *ngIf="s.tipo"><strong>Tipo:</strong> {{ s.tipo }}</p>
       </ion-label>
 
+      <!-- 🔹 Botão de lixeira para deletar sensor -->
+      <ion-button fill="clear" color="danger" slot="end" class="large" (click)="removerSensor(s.mac)">
+         <ion-icon name="trash-outline"></ion-icon>
+      </ion-button>
+
+
     </ion-item>
 
     <div *ngIf="sensores.length === 0" class="empty">

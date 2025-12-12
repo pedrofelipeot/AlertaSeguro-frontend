@@ -4,6 +4,7 @@ import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth-service';
+import { EventService } from '../../services/event-service';
 
 @Component({
   selector: 'app-menu',
@@ -16,20 +17,37 @@ export class MenuPage implements OnInit {
 
   mac: string = '';
 
+  userName: string = '';
+  userEmail: string = '';
+  userPhoto: string | null = null;
+  userInitials: { initials: string, color: string } = { initials: '', color: '#999' };
+
   constructor(
     private router: Router,
-    private auth: AuthService
+    private auth: AuthService,
+    private eventService: EventService
   ) {}
 
-  ngOnInit() {
-    // 🔥 pegar MAC salvo pelo home
-    this.mac = localStorage.getItem('selected_mac') || '';
+  async ngOnInit() {
+    const user = await this.auth.getCurrentUser();
 
-    if (!this.mac) {
-      console.warn('⚠ Nenhum MAC selecionado.');
-    } else {
-      console.log('📡 MAC carregado no Menu:', this.mac);
-    }
+    this.userName = user?.name || 'Usuário';
+    this.userEmail = user?.email || '';
+    this.userPhoto = user?.photo || null;
+    this.userInitials = this.auth.getUserInitialsAvatar();
+
+    // Atualiza o MAC selecionado
+    this.updateMac();
+
+    // Escuta mudanças de seleção de sensor
+    this.eventService.macChanged$.subscribe(() => {
+      this.updateMac();
+    });
+  }
+
+  updateMac() {
+    this.mac = this.eventService.getSelectedMac();
+    console.log('📡 MAC carregado no Menu:', this.mac);
   }
 
   async logout() {
@@ -40,12 +58,15 @@ export class MenuPage implements OnInit {
 
   goToHorarios() {
     if (!this.mac) {
-      console.warn('Nenhum MAC selecionado.');
+      this.router.navigate(['/horarios']); // rota sem MAC
       return;
     }
 
     const encoded = encodeURIComponent(this.mac);
-    this.router.navigate(['/horarios', encoded]);
+    this.router.navigate(['/horarios', encoded]); // rota com MAC
   }
 
+  onImageError() {
+    this.userPhoto = null;
+  }
 }

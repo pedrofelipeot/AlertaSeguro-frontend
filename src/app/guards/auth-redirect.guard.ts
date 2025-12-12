@@ -7,13 +7,15 @@ export const AuthRedirectGuard: CanActivateFn = () => {
   const auth = inject(AuthService);
   const router = inject(Router);
 
-  const uid = auth.getUid();
+  // Pega o usuário atual
+  const user = auth.getCurrentUser();
+  const uid = user?.uid || null;
 
   if (uid) {
     console.log('[AuthRedirectGuard] já logado → indo para home');
     router.navigate(['/home'], { replaceUrl: true });
-    return false;
+    return false; // impede acesso à rota de login
   }
 
-  return true;
+  return true; // permite acesso à rota de login
 };

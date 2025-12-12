@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Cores usadas no app -->
+    <color name="white">#FFFFFF</color>
+    <color name="splash_background">#1b2535</color> <!-- azul do splash -->
+    <color name="colorPrimary">#3880FF</color>
+    <color name="colorPrimaryDark">#3171E0</color>
+    <color name="colorAccent">#5260FF</color>
+
+</resources>
+

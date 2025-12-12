@@ -1,11 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { EventService } from '../services/event-service';
-import { finalize } from 'rxjs';
+import { AuthService } from '../services/auth-service';
+import { GlobalLoadingService } from '../services/global-loading.service';
+
+import { Subscription, of } from 'rxjs';
+import { timeout, catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
@@ -14,137 +17,148 @@ import { finalize } from 'rxjs';
     IonicModule,
     CommonModule,
     RouterModule,
-    HttpClientModule
+    HttpClientModule,
   ],
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
 })
-export class HomePage implements OnInit {
+export class HomePage implements OnInit, OnDestroy {
 
-  // 🔥 Nova flag que bloqueia a tela até tudo carregar
   loadingHome = true;
+
+  devicesLoaded = false;
+  eventsLoaded = false;
 
   userId = '';
   mac = '';
+  espName = '';
+
   events: any[] = [];
   lastEvent: any = null;
-
-  espName = '';
   espDevices: any[] = [];
-
   hasDevices = false;
 
   private baseUrl = 'https://alertaseguro-backend.onrender.com';
+  private backendPingSub?: Subscription;
 
   constructor(
     private router: Router,
     private http: HttpClient,
-    private eventService: EventService
+    private eventService: EventService,
+    private auth: AuthService,
+    private loading: GlobalLoadingService
   ) {}
 
-  ngOnInit() {
-    this.loadingHome = true; // garante que nada apareça antes
-    this.loadUser();
+  async ngOnInit() {
+    this.loadingHome = true;
+    this.devicesLoaded = false;
+    this.eventsLoaded = false;
+    this.hasDevices = false;
+
+    this.wakeBackend();
+    await this.loadUser();
   }
 
-  // =====================================================
-  // 🔥 CARREGAR USUÁRIO
-  // =====================================================
-  async loadUser() {
-    const uid = localStorage.getItem('uid');
+  ngOnDestroy() {
+    this.backendPingSub?.unsubscribe();
+  }
 
-    if (!uid) {
-      this.router.navigateByUrl('/login');
+  async loadUser() {
+    const user = await this.auth.getCurrentUser();
+
+    if (!user || !user.uid) {
+      this.finishLoading();
       return;
     }
 
-    this.userId = uid;
+    this.userId = user.uid;
     this.loadEspDevices();
+  }
+
+  // Wake backend
+  wakeBackend() {
+    this.backendPingSub = this.http.get(`${this.baseUrl}/ping`).pipe(
+      timeout(5000),
+      catchError(() => of(null))
+    ).subscribe(() => {});
+  }
+
+  loadEspDevices() {
+    const url = `${this.baseUrl}/users/${this.userId}/esp/list`;
+
+    this.http.get<any[]>(url).subscribe({
+      next: (devices) => {
+        this.devicesLoaded = true;
+        this.espDevices = devices;
+        this.hasDevices = devices.length > 0;
+
+        if (!this.hasDevices) {
+          this.finishLoading();
+          return;
+        }
+
+        // pega o primeiro ESP
+        const firstDevice = devices[0];
+        this.mac = firstDevice.mac.trim().toLowerCase();
+        this.espName = firstDevice.nome || "Sensor";
+
+        // salva o MAC globalmente
+        this.eventService.setSelectedMac(this.mac);
+
+        // Carregar eventos
+        this.loadEvents();
+      },
+
+      error: () => {
+        this.devicesLoaded = true;
+        this.finishLoading();
+      }
+    });
+  }
+
+  loadEvents() {
+    if (!this.userId || !this.mac) {
+      this.eventsLoaded = true;
+      this.finishLoading();
+      return;
+    }
+
+    // 🔥 PATH AJUSTADO (minúsculo):
+    this.eventService.getEvents(this.userId, this.mac).subscribe({
+      next: (resp) => {
+        this.eventsLoaded = true;
+
+        console.log("📥 EVENTOS RECEBIDOS DO BACKEND:", resp);
+
+        this.events = resp.slice(0, 3);
+        this.lastEvent = resp.length > 0 ? resp[0] : null;
+
+        this.finishLoading();
+      },
+
+      error: () => {
+        this.eventsLoaded = true;
+        this.finishLoading();
+      }
+    });
+  }
+
+  finishLoading() {
+    if (!this.devicesLoaded) return;
+    if (this.hasDevices && !this.eventsLoaded) return;
+
+    this.loadingHome = false;
   }
 
   goToHistorico(mac: string) {
     this.router.navigate(['/historico', mac]);
   }
 
-  // =====================================================
-  // 🔥 CARREGAR DISPOSITIVOS DO USUÁRIO
-  // =====================================================
-  loadEspDevices() {
-    const url = `${this.baseUrl}/users/${this.userId}/esp/list`;
-
-    this.http.get<any[]>(url)
-      .pipe(finalize(() => {})) // loading global trata
-      .subscribe({
-        next: (devices) => {
-          this.espDevices = devices;
-          this.hasDevices = devices.length > 0;
-
-          if (!this.hasDevices) {
-            // Desbloqueia tela mesmo sem dispositivos
-            this.loadingHome = false;
-            return;
-          }
-
-          this.mac = devices[0].mac.trim();
-          this.espName = devices[0].nome || "Sensor";
-
-          localStorage.setItem('selected_mac', this.mac);
-
-          this.loadEvents();
-        },
-        error: (err) => {
-          console.error("❌ Erro ao carregar dispositivos:", err);
-          this.loadingHome = false;
-        }
-      });
-  }
-
-  // =====================================================
-  // 🔥 CARREGAR EVENTOS
-  // =====================================================
-  // =====================================================
-// 🔥 CARREGAR EVENTOS
-// =====================================================
-loadEvents() {
-  if (!this.userId || !this.mac) {
-    this.loadingHome = false;
-    return;
-  }
-
-  this.eventService.getEvents(this.userId, this.mac)
-    .pipe(
-      finalize(() => {
-        // 👇 Agora só libera a tela quando TUDO terminou
-        this.loadingHome = false;
-      })
-    )
-    .subscribe({
-      next: (resp) => {
-
-        // 🔥 MANTÉM NOME DO SENSOR (opcional)
-        if (resp.length > 0) {
-          this.espName = resp[0].deviceName || this.espName;
-        }
-
-        // 🔥 SALVA APENAS AS 3 ÚLTIMAS NOTIFICAÇÕES
-        this.events = resp.slice(0, 3);
-
-        // 🔥 O último evento REAL segue sendo o primeiro da lista completa
-        this.lastEvent = resp.length > 0 ? resp[0] : null;
-      },
-      error: (err) => {
-        console.error('❌ Erro ao carregar eventos:', err);
-      }
-    });
-}
-
-
-  // Navegação
   goToMenu() {
     this.router.navigateByUrl('/menu');
   }
 
   goToAddDevice() {
-    this.router.navigateByUrl('/cadastro-dispositivo');
+    this.router.navigateByUrl('/cadastrar-sensor');
   }
 }

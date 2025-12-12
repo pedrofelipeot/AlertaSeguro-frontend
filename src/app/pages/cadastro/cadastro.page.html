@@ -10,7 +10,7 @@
       </ion-button>
 
       <h1>Criar Conta</h1>
-      <p>Preencha os dados abaixo</p>
+      <p>Preencha os dados abaixo ou use sua conta Google</p>
 
       <div class="inputs-group">
         <ion-item>
@@ -34,7 +34,15 @@
         </ion-item>
       </div>
 
+      <!-- Botão de cadastro normal -->
       <ion-button expand="block" class="login" (click)="onSignUp()">Cadastrar</ion-button>
+
+      <!-- Botão de cadastro/login com Google -->
+      <ion-button expand="block" fill="outline" color="danger" (click)="loginGoogle()" style="margin-top: 15px;">
+        <ion-icon slot="start" name="logo-google"></ion-icon>
+        Continuar com Google
+      </ion-button>
+
     </div>
   </div>
 </ion-content>

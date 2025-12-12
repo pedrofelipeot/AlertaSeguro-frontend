@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, AlertController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { HorariosService } from '../../services/horarios.service';
 import { HttpClientModule } from '@angular/common/http';
+import { AuthService } from '../../services/auth-service';
 
 @Component({
   selector: 'app-horarios',
@@ -19,82 +20,68 @@ import { HttpClientModule } from '@angular/common/http';
 })
 export class HorariosPage implements OnInit {
 
-  userId: string | null = null;
-  mac: string = '';
-  espName: string = '';
   horarios: any[] = [];
   loading = true;
   errorMsg: string | null = null;
 
   diasSemana: Record<number, string> = {
+    0: "Domingo",
     1: "Segunda",
     2: "Terça",
     3: "Quarta",
     4: "Quinta",
     5: "Sexta",
-    6: "Sábado",
-    7: "Domingo"
+    6: "Sábado"
   };
 
   constructor(
-    private route: ActivatedRoute,
     private router: Router,
-    private horariosService: HorariosService
+    private horariosService: HorariosService,
+    private auth: AuthService,
+    private alertCtrl: AlertController
   ) {}
 
-  ngOnInit() {
-    this.userId = localStorage.getItem('uid');
-    if (!this.userId) {
-      this.router.navigateByUrl('/login');
-      return;
-    }
-
-    this.route.paramMap.subscribe(params => {
-      const macParam = params.get('mac');
-
-      if (!macParam) {
-        this.errorMsg = 'MAC do dispositivo não fornecido.';
-        this.loading = false;
-        return;
-      }
-
-      console.log('📡 MAC recebido (encoded):', macParam);
-
-      this.mac = decodeURIComponent(macParam);
-      console.log('📡 MAC decodificado:', this.mac);
-
-      this.loadHorarios();
-    });
+  async ngOnInit() {
+    await this.loadHorarios();
   }
 
-  loadHorarios() {
-    if (!this.userId) return;
+  // ✅ Agora funciona com e sem refresher
+  async loadHorarios(event?: any) {
 
     this.loading = true;
     this.errorMsg = null;
 
-    this.horariosService.getHorarios(this.userId, this.mac).subscribe({
-      next: (resp: any[]) => {
-        console.log('✅ Horários recebidos:', resp);
+    try {
+      const resp = await this.horariosService.getTodosHorarios();
 
-        this.horarios = resp;
+      console.log('✅ Todos horários recebidos:', resp);
 
-        if (this.horarios.length > 0) {
-          this.espName = this.horarios[0].deviceName || '';
-        }
+      this.horarios = resp.map(h => ({
+        ...h,
+        docId: h.docId || h.id
+      }));
 
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('❌ Erro ao carregar horários:', err);
-        this.errorMsg = 'Erro ao carregar horários.';
-        this.loading = false;
+      if (this.horarios.length === 0) {
+        this.errorMsg = "Nenhum horário cadastrado.";
       }
-    });
+
+    } catch (err) {
+      console.error('❌ Erro ao carregar horários:', err);
+      this.errorMsg = 'Erro ao carregar horários.';
+      this.horarios = [];
+    } finally {
+      this.loading = false;
+
+      // Finaliza o refresher se tiver sido chamado por ele
+      if (event) {
+        event.target.complete();
+      }
+    }
   }
 
+  // ✅ Corrigido para não dar erro no HTML
   formatDias(dias: any[]): string {
-    if (!Array.isArray(dias)) return '';
+    if (!Array.isArray(dias) || dias.length === 0) return '—';
 
     return dias
       .map(d => this.diasSemana[d] || d)
@@ -103,5 +90,37 @@ export class HorariosPage implements OnInit {
 
   goBack() {
     this.router.navigateByUrl('/home');
+  }
+
+  // 🔹 DELETAR HORÁRIO
+  async removerHorario(horario: any) {
+
+    const alert = await this.alertCtrl.create({
+      header: 'Confirmação',
+      message: `Deseja realmente deletar este horário do sensor ${horario.deviceName || horario.mac}?`,
+      buttons: [
+        { text: 'Cancelar', role: 'cancel' },
+        {
+          text: 'Deletar',
+          handler: async () => {
+            try {
+              console.log('🗑️ Deletando horário:', horario);
+
+              await this.horariosService.deleteHorario(horario.mac, horario.docId);
+
+              // remove da tela sem precisar recarregar tudo
+              this.horarios = this.horarios.filter(
+                h => h.docId !== horario.docId
+              );
+
+            } catch (err) {
+              console.error('❌ Erro ao deletar horário:', err);
+            }
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 }

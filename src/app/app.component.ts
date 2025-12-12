@@ -19,29 +19,17 @@ export class AppComponent {
     private authService: AuthService,
     private notificationService: NotificationService
   ) {
-
-    // Inicializa status bar e empurra conteúdo para baixo
     this.initializeApp();
-
-    // Suas notificações continuam funcionando
     this.notificationService.initNotifications();
   }
 
-  /** Ajuste da Status Bar para evitar que o HEADER/FOOTER fiquem por baixo do sistema */
   private async initializeApp() {
     await this.platform.ready();
 
-    try {
-      // Impede overlay da status bar
-      await StatusBar.setOverlaysWebView({ overlay: false });
+    await StatusBar.setOverlaysWebView({ overlay: false });
+    await StatusBar.setStyle({ style: Style.Dark });
 
-      // Ajusta cor da status bar — dark combina com header escuro
-      await StatusBar.setStyle({ style: Style.Dark });
-
-      console.log('📱 StatusBar ajustada com sucesso!');
-    } catch (error) {
-      console.warn('⚠️ Erro ao ajustar StatusBar', error);
-    }
+    console.log('✅ App inicializado com Splash automática!');
   }
 
   async logout() {

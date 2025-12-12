@@ -10,30 +10,43 @@
 <ion-content fullscreen>
   <div class="page-wrapper">
 
-
-      <!-- TÍTULO DO DISPOSITIVO -->
-      <div class="device-header" *ngIf="espName">
-        <h2>{{ espName }}</h2>
-        <p class="mac">MAC: {{ mac }}</p>
-      </div>
-
-      <!-- EVENTOS -->
-      <div *ngFor="let e of events" class="event-card fade">
-        <div class="event-top">
-          <div class="left">
-            <div class="date">{{ e.data }}</div>
-            <div class="time">{{ e.hora }}</div>
-          </div>
-
-          <div class="right">
-            <div class="device">{{ e.deviceName || espName }}</div>
-          </div>
-        </div>
-
-        <div class="event-msg">
-          {{ formatMessage(e) }}
-        </div>
-      </div>
-
+    <div class="device-header" *ngIf="espName">
+      <h2>{{ espName }}</h2>
+      <p class="mac">MAC: {{ mac }}</p>
     </div>
+
+    <div *ngIf="loading" class="info">Carregando eventos...</div>
+
+    <div *ngIf="!loading && events.length === 0" class="info">
+      Nenhum evento registrado para este dispositivo.
+    </div>
+
+    <div *ngIf="errorMsg" class="error">
+      {{ errorMsg }}
+    </div>
+
+    <div *ngFor="let e of events" class="event-card fade">
+      <div class="event-top">
+
+        <div class="left">
+          <div class="date">{{ e.data }}</div>
+          <div class="time">{{ e.hora }}</div>
+        </div>
+
+        <div class="right">
+          <div class="device">{{ e.deviceName || espName }}</div>
+
+          <ion-button fill="clear" size="small" (click)="removerEvento(e.id)">
+            <ion-icon name="trash-outline" class="trash-icon"></ion-icon>
+          </ion-button>
+        </div>
+
+      </div>
+
+      <div class="event-msg">
+        {{ formatMessage(e) }}
+      </div>
+    </div>
+
+  </div>
 </ion-content>

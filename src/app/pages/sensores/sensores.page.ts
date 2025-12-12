@@ -12,7 +12,9 @@ import {
   IonList,
   IonItem,
   IonIcon,
-  IonLabel
+  IonLabel,
+  IonButton,
+  AlertController
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 
@@ -23,8 +25,6 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [
     CommonModule,
-
-    // Ionic standalone components usados no HTML
     IonHeader,
     IonToolbar,
     IonButtons,
@@ -37,13 +37,17 @@ import { CommonModule } from '@angular/common';
     IonItem,
     IonIcon,
     IonLabel,
+    IonButton
   ]
 })
 export class SensoresPage implements OnInit {
 
   sensores: any[] = [];
 
-  constructor(private sensorService: SensorService) {}
+  constructor(
+    private sensorService: SensorService,
+    private alertCtrl: AlertController
+  ) {}
 
   async ngOnInit() {
     await this.carregarSensores();
@@ -53,12 +57,37 @@ export class SensoresPage implements OnInit {
     try {
       this.sensores = await this.sensorService.getSensores();
     } catch (err) {
-      console.error(err);
+      console.error('Erro ao carregar sensores:', err);
     }
   }
 
   async atualizar(event: any) {
     await this.carregarSensores();
     event.target.complete();
+  }
+
+  // 🔹 Função para deletar sensor com confirmação
+  async removerSensor(mac: string) {
+    const alert = await this.alertCtrl.create({
+      header: 'Confirmação',
+      message: 'Deseja realmente deletar este sensor?',
+      buttons: [
+        { text: 'Cancelar', role: 'cancel' },
+        {
+          text: 'Deletar',
+          handler: async () => {
+            try {
+              await this.sensorService.deleteSensor(mac);
+              // Atualiza lista local
+              this.sensores = this.sensores.filter(s => s.mac !== mac);
+            } catch (err) {
+              console.error('Erro ao deletar sensor:', err);
+            }
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 }

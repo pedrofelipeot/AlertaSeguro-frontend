@@ -3,19 +3,35 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/home" color="light"></ion-back-button>
     </ion-buttons>
+
     <ion-title>Menu</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content fullscreen>
 
+  <!-- PERFIL -->
   <div class="profile-box">
-    <ion-avatar>
-      <img src="https://i.pravatar.cc/150?img=3" alt="Avatar" />
-    </ion-avatar>
 
-    <div class="profile-name">Pedro Felipe</div>
-    <div class="profile-email">pedro@email.com</div>
+    <!-- Avatar: Foto ou iniciais -->
+    <ng-container *ngIf="userPhoto && userPhoto !== ''; else initialsAvatar">
+      <ion-avatar>
+        <img 
+          [src]="userPhoto" 
+          alt="Avatar"
+          (error)="onImageError()"
+        />
+      </ion-avatar>
+    </ng-container>
+
+    <ng-template #initialsAvatar>
+      <div class="initials-avatar" [style.background]="userInitials.color">
+        {{ userInitials.initials }}
+      </div>
+    </ng-template>
+
+    <div class="profile-name">{{ userName }}</div>
+    <div class="profile-email">{{ userEmail }}</div>
 
     <ion-button fill="outline" color="danger" size="small" (click)="logout()">
       <ion-icon slot="start" name="log-out-outline"></ion-icon>
@@ -25,6 +41,7 @@
 
   <div class="menu-divider"></div>
 
+  <!-- MENU -->
   <ion-list class="menu-list" lines="none">
 
     <ion-item button routerLink="/home">
@@ -43,8 +60,7 @@
     </ion-item>
 
     <ion-item button routerLink="/sensores">
-      <ion-icon name="radio-outline"></ion-icon>
-
+      <ion-icon name="radio-outline" slot="start"></ion-icon>
       <ion-label>Sensores</ion-label>
     </ion-item>
 

@@ -1,52 +1,66 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../services/auth-service';
-import {
-  IonContent,
-  IonItem,
-  IonLabel,
-  IonInput,
-  IonButton,
-  IonIcon
-} from '@ionic/angular/standalone';
+import { GlobalLoadingService } from '../../services/global-loading.service'; // 👈
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    RouterModule,
-    IonContent,
-    IonItem,
-    IonLabel,
-    IonInput,
-    IonButton,
-    IonIcon
-  ],
+  imports: [IonicModule, CommonModule, FormsModule],
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
 })
-export class LoginPage {
+export class LoginPage implements OnInit {
+
   email = '';
   password = '';
+  loading = false;
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(
+    private auth: AuthService, 
+    private router: Router,
+    private globalLoading: GlobalLoadingService // 👈
+  ) {}
 
-  async onSignIn() {
+  ngOnInit() {
+    localStorage.removeItem('uid');
+    localStorage.removeItem('email');
+  }
+
+  async fazerLogin() {
+    this.loading = true;
+    this.globalLoading.show(); // 🔥 loading global
+
     try {
       await this.auth.signIn(this.email, this.password);
-      alert('Logado com sucesso!');
-      this.router.navigate(['/home']); 
-    } catch (err: any) {
-      alert('Erro ao logar: ' + (err.message || err));
+      this.router.navigateByUrl('/home');
+    } catch (err) {
+      console.error('Login falhou:', err);
+      alert('Email ou senha incorretos.');
+    } finally {
+      this.loading = false;
+      this.globalLoading.hide(); // 🔥 esconde
     }
   }
 
-  async onLogout() {
-    await this.auth.signOut();
-    alert('Logout feito com sucesso!');
+  async loginGoogle() {
+    this.globalLoading.show(); // 🔥 loading global
+
+    try {
+      await this.auth.signInWithGoogle();
+      this.router.navigateByUrl('/home');
+    } catch (err) {
+      console.error('Erro no login com Google:', err);
+      alert('Erro ao entrar com Google.');
+    } finally {
+      this.globalLoading.hide();
+    }
+  }
+
+  goBack() {
+    this.router.navigate(['/welcome'], { replaceUrl: true });
   }
 }

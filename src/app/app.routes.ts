@@ -76,12 +76,12 @@ export const routes: Routes = [
   },
 
   // ================================
-  // Telas com parâmetros
+  // Horários → agora funciona COM ou SEM MAC 🔥
   // ================================
   {
-    path: 'historico/:mac',
+    path: 'horarios',
     loadComponent: () =>
-      import('./pages/historico/historico.page').then(m => m.HistoricoPage),
+      import('./pages/horarios/horarios.page').then(m => m.HorariosPage),
     canActivate: [AuthGuard],
   },
   {
@@ -92,13 +92,22 @@ export const routes: Routes = [
   },
 
   // ================================
+  // Telas com parâmetros
+  // ================================
+  {
+    path: 'historico/:mac',
+    loadComponent: () =>
+      import('./pages/historico/historico.page').then(m => m.HistoricoPage),
+    canActivate: [AuthGuard],
+  },
+
+  // ================================
   // Tela listagem de sensores
   // ================================
   {
     path: 'sensores',
     loadComponent: () =>
       import('./pages/sensores/sensores.page').then(m => m.SensoresPage),
-    canActivate: [AuthGuard],  // coloquei para proteger (caso queira público, eu removo)
+    canActivate: [AuthGuard],
   },
-
 ];

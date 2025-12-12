@@ -1,7 +1,9 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { ToastController } from '@ionic/angular';
 
 import {
   IonHeader,
@@ -20,17 +22,21 @@ import {
   IonSelect,
   IonSelectOption,
   IonButton,
-  IonIcon
+  IonSpinner
 } from "@ionic/angular/standalone";
+
+import { AuthService } from '../../services/auth-service';
+import { GlobalLoadingService } from '../../services/global-loading.service'; 
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-programar-alerta',
   standalone: true,
-  schemas: [CUSTOM_ELEMENTS_SCHEMA], // NECESSÁRIO PARA ngModel
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [
     CommonModule,
     FormsModule,
-    HttpClientModule, // <<=== ESSENCIAL PARA HttpClient funcionar
+    HttpClientModule,
 
     IonHeader,
     IonToolbar,
@@ -51,6 +57,7 @@ import {
     IonSelectOption,
 
     IonButton,
+    IonSpinner
   ],
   templateUrl: './programar-alerta.page.html',
   styleUrls: ['./programar-alerta.page.scss'],
@@ -77,23 +84,44 @@ export class ProgramarAlertaPage implements OnInit {
   ];
 
   devices: any[] = [];
+  userUid: string | null = null;
 
-  constructor(private http: HttpClient) {}
+  enviando = false;
 
-  ngOnInit() {
-    this.loadDevices();
+  constructor(
+    private http: HttpClient,
+    private auth: AuthService,
+    private loading: GlobalLoadingService,
+    private toastController: ToastController,
+    private router: Router
+  ) {}
+
+  async ngOnInit() {
+    const user = await this.auth.getCurrentUser();
+
+    if (user) {
+      this.userUid = user.uid;
+      await this.loadDevices();
+    } else {
+      console.warn("⚠ Nenhum usuário logado!");
+      this.presentToast("Usuário não autenticado", "danger");
+    }
   }
 
   async loadDevices() {
-    const uid = localStorage.getItem("uid");
-    if (!uid) return;
+    if (!this.userUid) return;
+
+    this.loading.show(); 
 
     try {
-      this.devices = await this.http
-        .get<any[]>(`${this.backendUrl}/users/${uid}/esp/list`)
-        .toPromise() || [];
+      this.devices = await firstValueFrom(
+        this.http.get<any[]>(`${this.backendUrl}/users/${this.userUid}/esp/list`)
+      );
     } catch (e) {
       console.error("Erro ao carregar dispositivos:", e);
+      this.presentToast("Erro ao carregar dispositivos.", "danger");
+    } finally {
+      this.loading.hide(); 
     }
   }
 
@@ -115,27 +143,64 @@ export class ProgramarAlertaPage implements OnInit {
 
   async scheduleAlert() {
 
-  const mac = this.model.device;
+    if (!this.isFormValid()) {
+      this.presentToast("Preencha todos os campos corretamente.", "danger");
+      return;
+    }
 
-  const body = {
-    inicio: this.model.startTime,
-    fim: this.model.endTime,
-    dias: this.model.dias.map((d: any) => Number(d)), // 🔥 FIX
-    ativo: true
-  };
+    if (!this.userUid) {
+      this.presentToast("Usuário não identificado.", "danger");
+      return;
+    }
 
-  try {
-    await this.http
-      .post(`${this.backendUrl}/esp/${mac}/horarios`, body)
-      .toPromise();
+    const mac = this.model.device;
 
-    alert("Horário salvo com sucesso!");
-    history.back();
+    const body = {
+      inicio: this.model.startTime,
+      fim: this.model.endTime,
+      dias: this.model.dias.map((d: any) => Number(d)),
+      ativo: true
+    };
 
-  } catch (e) {
-    console.error("Erro ao salvar horário:", e);
-    alert("Erro ao salvar horário.");
+    this.enviando = true;
+    this.loading.show();
+
+    try {
+
+      const url = `${this.backendUrl}/esp/${this.userUid}/${encodeURIComponent(mac)}/horarios`;
+
+      console.log("📡 Enviando para:", url);
+      console.log("📦 Body:", body);
+
+      await firstValueFrom(
+        this.http.post(url, body)
+      );
+
+      this.presentToast("Alerta programado com sucesso!", "success");
+
+      setTimeout(() => {
+        this.router.navigate(['/home']);
+      }, 800);
+
+    } catch (e) {
+      console.error("❌ Erro ao salvar horário:", e);
+      this.presentToast("Erro ao salvar alerta.", "danger");
+    } finally {
+      this.enviando = false;
+      this.loading.hide();
+    }
   }
-}
 
+  async presentToast(message: string, color: 'success' | 'danger' = 'success') {
+    const toast = await this.toastController.create({
+      message,
+      duration: 3000,
+      color,
+      position: 'top',
+      icon: color === 'success' ? 'checkmark-circle-outline' : 'alert-circle-outline',
+      cssClass: 'custom-toast'
+    });
+
+    toast.present();
+  }
 }

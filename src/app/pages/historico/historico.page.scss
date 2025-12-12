@@ -94,6 +94,7 @@ ion-content {
   background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0));
   opacity: 0;
   transition: opacity 0.3s ease;
+  pointer-events: none;
 }
 
 .event-card:hover::after {
@@ -156,6 +157,15 @@ ion-content {
   font-size: 1rem;
   color: #cfd8e3;
 }
+
+.trash-icon {
+  font-size: 22px;
+  color: #ff5c5c;
+  cursor: pointer;
+  z-index: 10;
+  position: relative;
+}
+
 
 .empty-box .big-icon {
   font-size: 4.2rem;

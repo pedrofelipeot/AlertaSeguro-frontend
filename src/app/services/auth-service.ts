@@ -1,105 +1,156 @@
 import { Injectable } from '@angular/core';
 import { CapacitorHttp } from '@capacitor/core';
+import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
+
+export interface UsuarioAuth {
+  uid: string;
+  email: string;
+  name: string;
+  photo: string;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  // ✅ Sempre usar HTTPS e evitar redirecionamentos
-  private baseUrl = 'https://alertaseguro-backend.onrender.com'; 
+
+  private baseUrl = 'https://alertaseguro-backend.onrender.com';
 
   constructor() {}
 
-  // ======================
-  // Registro
-  // ======================
-  async signUp(email: string, password: string, nome: string) {
-    try {
-      console.log('Tentando registrar em:', `${this.baseUrl}/auth/register`);
-
-      const response = await CapacitorHttp.post({
-        url: `${this.baseUrl}/auth/register`,
-        headers: { 
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        data: { email, password, nome },
-        webFetchExtra: {
-          mode: 'cors' // ✅ Ajuda em PWA e apps híbridos
-        },
-        connectTimeout: 10000, // 10 segundos
-        readTimeout: 10000
-      });
-
-      const data = response.data;
-      console.log('Registro bem-sucedido:', data);
-
-      localStorage.setItem('uid', data.uid);
-      localStorage.setItem('email', email);
-
-      return data;
-    } catch (error: any) {
-      console.error('Erro completo no registro:', JSON.stringify(error));
-      throw new Error(error.error?.message || 'Erro ao cadastrar usuário');
-    }
-  }
-
-  // ======================
-  // Login
-  // ======================
+  // =============================
+  // LOGIN NORMAL
+  // =============================
   async signIn(email: string, password: string) {
-    try {
-      console.log('Tentando login em:', `${this.baseUrl}/auth/login`);
+    const response = await CapacitorHttp.post({
+      url: `${this.baseUrl}/auth/login`,
+      headers: { 'Content-Type': 'application/json' },
+      data: { email, password },
+      webFetchExtra: { mode: 'cors' }
+    });
 
-      const response = await CapacitorHttp.post({
-        url: `${this.baseUrl}/auth/login`,
-        headers: { 
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        data: { email, password },
-        webFetchExtra: {
-          mode: 'cors'
-        },
-        connectTimeout: 10000,
-        readTimeout: 10000
-      });
+    const data = response.data;
 
-      const data = response.data;
-      console.log('Login bem-sucedido:', data);
-
-      localStorage.setItem('uid', data.uid);
-      localStorage.setItem('email', data.email);
-
-      return data;
-    } catch (error: any) {
-      console.error('Erro completo no login:', JSON.stringify(error));
-      throw new Error(error.error?.message || 'Erro ao logar usuário');
+    if (!data || data.error || !data.uid) {
+      throw new Error(data?.message || 'Credenciais inválidas');
     }
+
+    this.saveUser({
+      uid: data.uid,
+      email: data.email,
+      name: data.nome || '',
+      photo: data.photoURL || ''
+    });
+
+    return data;
   }
 
-  // ======================
-  // Logout
-  // ======================
+  // =============================
+  // CADASTRO
+  // =============================
+  async signUp(email: string, password: string, nome: string) {
+    const response = await CapacitorHttp.post({
+      url: `${this.baseUrl}/auth/register`,
+      headers: { 'Content-Type': 'application/json' },
+      data: { email, password, nome },
+      webFetchExtra: { mode: 'cors' }
+    });
+
+    const data = response.data;
+
+    if (!data || !data.uid) {
+      throw new Error(data?.message || 'Erro ao cadastrar');
+    }
+
+    this.saveUser({
+      uid: data.uid,
+      email,
+      name: nome,
+      photo: ''
+    });
+
+    return data;
+  }
+
+  // =============================
+  // GOOGLE LOGIN
+  // =============================
+  async signInWithGoogle() {
+    const result = await GoogleAuth.signIn();
+    const idToken = result.authentication.idToken;
+
+    const response = await CapacitorHttp.post({
+      url: `${this.baseUrl}/auth/google`,
+      headers: { 'Content-Type': 'application/json' },
+      data: { idToken },
+      webFetchExtra: { mode: 'cors' }
+    });
+
+    const data = response.data;
+
+    const photo = data.photoURL || result?.imageUrl || '';
+
+    this.saveUser({
+      uid: data.uid,
+      email: data.email,
+      name: data.nome || data.displayName || '',
+      photo
+    });
+
+    return data;
+  }
+
+  // =============================
+  // SALVAR USUÁRIO LIMPO
+  // =============================
+  private saveUser(user: UsuarioAuth) {
+    localStorage.setItem('user', JSON.stringify(user));
+  }
+
+  // =============================
+  // OBTER USUÁRIO ATUAL
+  // =============================
+  getCurrentUser(): UsuarioAuth | null {
+    const stored = localStorage.getItem('user');
+    if (!stored) return null;
+
+    return JSON.parse(stored);
+  }
+
+  getUid(): string | null {
+    const user = this.getCurrentUser();
+    return user?.uid || null;
+  }
+
+  // =============================
+  // LOGOUT COMPLETO
+  // =============================
   async signOut() {
-    localStorage.removeItem('uid');
-    localStorage.removeItem('email');
+    localStorage.clear(); // 🔥 limpa TUDO
   }
 
-  // ======================
-  // Retorna apenas o UID
-  // ======================
-  getUid() {
-    return localStorage.getItem('uid');
+  // =============================
+  // FOTO
+  // =============================
+  getUserPhoto(): string {
+    const user = this.getCurrentUser();
+    return user?.photo || '';
   }
 
-  // ======================
-  // Retorna o usuário atual (uid + email)
-  // ======================
-  async getCurrentUser() {
-    const uid = localStorage.getItem('uid');
-    const email = localStorage.getItem('email');
-    if (!uid) return null;
-    return { uid, email };
+  // =============================
+  // AVATAR COM INICIAIS
+  // =============================
+  getUserInitialsAvatar(): { initials: string, color: string } {
+    const user = this.getCurrentUser();
+
+    const name = user?.name || 'Usuário';
+    const words = name.trim().split(' ');
+    let initials = words.length === 1 ? words[0][0] : words[0][0] + words[words.length - 1][0];
+    initials = initials.toUpperCase();
+
+    const colors = ['#FF6B6B', '#6BCB77', '#4D96FF', '#FFC75F', '#845EC2', '#FF9671'];
+    const color = colors[name.charCodeAt(0) % colors.length];
+
+    return { initials, color };
   }
 }

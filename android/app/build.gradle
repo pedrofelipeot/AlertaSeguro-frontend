@@ -42,6 +42,7 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
     implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"
     implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
+    implementation 'com.google.android.material:material:1.10.0'   // ✅ ADICIONADO
     implementation project(':capacitor-android')
 
     testImplementation "junit:junit:$junitVersion"
@@ -50,6 +51,7 @@ dependencies {
 
     implementation project(':capacitor-cordova-android-plugins')
 }
+
 
 apply from: 'capacitor.build.gradle'
 
